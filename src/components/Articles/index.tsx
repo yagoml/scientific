@@ -11,15 +11,22 @@ import Spinner from 'react-bootstrap/Spinner'
 import Table from 'react-bootstrap/Table'
 import { Star, Search, StarFill } from 'react-bootstrap-icons'
 import './style.scss'
+import { History, LocationState } from 'history'
+import queryString from 'query-string'
 
 interface StateProps {
   articles: Article[]
   loading: boolean
+  favorites: string[]
+  history: History<LocationState>
+  location: Location
 }
 
 interface DispathProps {
-  loadRequest(query: string): Action
+  fetchArticles(query: string): Action
   addFavorite(id: string): Action
+  removeFavorite(id: string): Action
+  fetchFavorites(): Action
 }
 
 interface LocalState {
@@ -31,17 +38,30 @@ type Props = StateProps & DispathProps
 class Articles extends Component<Props, LocalState> {
   constructor(props: Props) {
     super(props)
-    this.state = { searchTerms: '' }
+    const query = queryString.parse(this.props.location.search)
+    let searchTerms = ''
+    if (query && query.terms) searchTerms = query.terms.toString()
+    this.state = { searchTerms: searchTerms }
+  }
+
+  componentWillReceiveProps() {
+    console.log(queryString.parse(this.props.location.search))
+  }
+
+  componentDidMount() {
+    const { fetchFavorites } = this.props
+    fetchFavorites()
+    if (this.state.searchTerms.length) this.search()
   }
 
   render() {
-    const { articles, loading } = this.props
+    const { articles, loading, favorites } = this.props
 
     return (
       <div className="articles">
         <div className="articles__header">
           <Form
-            onSubmit={this.search}
+            onSubmit={this.setTerms}
             className="position-relative articles__form mb-5"
           >
             <Form.Label>Pesquisar artigos</Form.Label>
@@ -75,7 +95,6 @@ class Articles extends Component<Props, LocalState> {
             </Spinner>
           </div>
         )}
-
         {articles.length > 0 && !loading && (
           <Table hover className="articles__table">
             <thead>
@@ -101,23 +120,27 @@ class Articles extends Component<Props, LocalState> {
                     </a>
                   </td>
                   <td>
-                    <button
-                      className="btn favorite"
-                      title="Adicionar aos favoritos"
-                      onClick={() => this.addFavorite(article.id)}
-                    >
-                      <Star color="#0069d9" size={24} />
-                    </button>
-                    <button
-                      className="btn favorite--filled"
-                      title="Remover dos favoritos"
-                    >
-                      <StarFill
-                        color="#0069d9"
-                        size={24}
-                        className="favorite"
-                      />
-                    </button>
+                    {!favorites.includes(article.id) ? (
+                      <button
+                        className="btn favorite"
+                        title="Adicionar aos favoritos"
+                        onClick={() => this.addFavorite(article.id)}
+                      >
+                        <Star color="#0069d9" size={24} />
+                      </button>
+                    ) : (
+                      <button
+                        className="btn favorite--filled"
+                        title="Remover dos favoritos"
+                        onClick={() => this.removeFavorite(article.id)}
+                      >
+                        <StarFill
+                          color="#0069d9"
+                          size={24}
+                          className="favorite"
+                        />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -128,10 +151,18 @@ class Articles extends Component<Props, LocalState> {
     )
   }
 
-  search = (event: React.FormEvent) => {
+  setTerms = (event: React.FormEvent) => {
     event.preventDefault()
-    const { loadRequest } = this.props
-    loadRequest(this.state.searchTerms)
+    this.props.history.push({
+      pathname: '/',
+      search: '?terms=' + this.state.searchTerms
+    })
+    this.search()
+  }
+
+  search = () => {
+    const { fetchArticles } = this.props
+    fetchArticles(this.state.searchTerms)
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,11 +178,17 @@ class Articles extends Component<Props, LocalState> {
     const { addFavorite } = this.props
     addFavorite(id)
   }
+
+  removeFavorite = (id: string) => {
+    const { removeFavorite } = this.props
+    removeFavorite(id)
+  }
 }
 
 const mapStateToProps = (state: ApplicationState) => ({
   articles: state.articles.data,
-  loading: state.articles.loading
+  loading: state.articles.loading,
+  favorites: state.favorites
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
