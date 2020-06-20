@@ -1,5 +1,39 @@
 .articles {
+  $input-height: 40px;
+
+  &__header {
+    padding: 30px;
+  }
+
   &__table {
     table-layout: fixed;
+
+    a {
+      word-break: break-all;
+    }
+
+    .favorite {
+      cursor: pointer;
+    }
+  }
+
+  &__form {
+    max-width: 400px;
+
+    .form-control {
+      height: $input-height;
+
+      &:focus {
+        box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
+      }
+    }
+  }
+
+  &__btn-search {
+    height: $input-height;
+    top: 16px;
+    right: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 }

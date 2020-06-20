@@ -4,12 +4,12 @@ import { bindActionCreators, Dispatch, Action } from 'redux'
 import { ApplicationState } from './../../store/index'
 import { Article } from '../../store/ducks/articles/types'
 import * as ArticlesActions from '../../store/ducks/articles/actions'
-import Container from 'react-bootstrap/Container'
+import * as FavoritesActions from '../../store/ducks/favorites/actions'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Spinner from 'react-bootstrap/Spinner'
 import Table from 'react-bootstrap/Table'
-import { Star } from 'react-bootstrap-icons'
+import { Star, Search, StarFill } from 'react-bootstrap-icons'
 import './style.scss'
 
 interface StateProps {
@@ -19,6 +19,7 @@ interface StateProps {
 
 interface DispathProps {
   loadRequest(query: string): Action
+  addFavorite(id: string): Action
 }
 
 interface LocalState {
@@ -37,22 +38,32 @@ class Articles extends Component<Props, LocalState> {
     const { articles, loading } = this.props
 
     return (
-      <Container className="articles">
-        <Form onSubmit={this.search} className="mb-5">
-          <Form.Label>Pesquisar artigos</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Palavra(s) chave"
-            value={this.state.searchTerms}
-            onChange={this.handleChange}
-          />
-          <Form.Text className="text-muted">
-            Pesquise por <strong>título, descrição ou autores</strong>
-          </Form.Text>
-          <Button variant="primary" type="submit" className="mt-2">
-            Pesquisar
-          </Button>
-        </Form>
+      <div className="articles">
+        <div className="articles__header">
+          <Form
+            onSubmit={this.search}
+            className="position-relative articles__form mb-5"
+          >
+            <Form.Label>Pesquisar artigos</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Palavra(s) chave"
+              value={this.state.searchTerms}
+              onChange={this.handleChange}
+            />
+            <Form.Text className="text-muted">
+              Pesquise por <strong>título, descrição</strong> ou{' '}
+              <strong>autores</strong>
+            </Form.Text>
+            <Button
+              variant="primary"
+              type="submit"
+              className="mt-3 position-absolute articles__btn-search"
+            >
+              <Search color="white" size={22} />
+            </Button>
+          </Form>
+        </div>
 
         {loading && (
           <div className="d-flex flex-column align-items-center justify-content-center loading">
@@ -85,17 +96,35 @@ class Articles extends Component<Props, LocalState> {
                   <td>{article.title}</td>
                   <td>{article.description}</td>
                   <td>
-                    <a href={article.downloadUrl}>{article.downloadUrl}</a>
+                    <a href={article.downloadUrl} title={article.downloadUrl}>
+                      {this.getUrlAlias(article.downloadUrl)}
+                    </a>
                   </td>
                   <td>
-                    <Star color="royalblue" size={24} />
+                    <button
+                      className="btn favorite"
+                      title="Adicionar aos favoritos"
+                      onClick={() => this.addFavorite(article.id)}
+                    >
+                      <Star color="#0069d9" size={24} />
+                    </button>
+                    <button
+                      className="btn favorite--filled"
+                      title="Remover dos favoritos"
+                    >
+                      <StarFill
+                        color="#0069d9"
+                        size={24}
+                        className="favorite"
+                      />
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </Table>
         )}
-      </Container>
+      </div>
     )
   }
 
@@ -108,6 +137,16 @@ class Articles extends Component<Props, LocalState> {
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ searchTerms: event.target.value })
   }
+
+  getUrlAlias = (url: string) => {
+    const split = url.split('/')
+    return split[split.length - 1]
+  }
+
+  addFavorite = (id: string) => {
+    const { addFavorite } = this.props
+    addFavorite(id)
+  }
 }
 
 const mapStateToProps = (state: ApplicationState) => ({
@@ -116,6 +155,6 @@ const mapStateToProps = (state: ApplicationState) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(ArticlesActions, dispatch)
+  bindActionCreators({ ...ArticlesActions, ...FavoritesActions }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Articles)

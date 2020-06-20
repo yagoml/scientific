@@ -2,13 +2,13 @@
  * Action types
  */
 export enum ArticlesTypes {
-  LOAD_REQUEST = '@articles/LOAD_REQUEST',
-  LOAD_SUCCESS = '@articles/LOAD_SUCCESS',
-  LOAD_FAILURE = '@articles/LOAD_FAILURE'
+  FETCH_ARTICLES = '@articles/FETCH_ARTICLES',
+  ARTICLES_SUCCESS = '@articles/ARTICLES_SUCCESS',
+  ARTICLES_FAILURE = '@articles/ARTICLES_FAILURE'
 }
 
 export interface LoadRequestPayload {
-  type: typeof ArticlesTypes.LOAD_REQUEST
+  type: typeof ArticlesTypes.FETCH_ARTICLES
   payload: string
 }
 
