@@ -1,4 +1,4 @@
-import { loadSuccess, loadFailure } from './actions'
+import { articlesSuccess, articlesFailed } from './actions'
 import axios, { AxiosRequestConfig } from 'axios'
 import { call, put } from 'redux-saga/effects'
 import { LoadRequestPayload } from './types'
@@ -38,8 +38,8 @@ export function* searchArticles({ payload }: LoadRequestPayload) {
 
   try {
     const response = yield call(apiCall)
-    yield put(loadSuccess(response.data))
+    yield put(articlesSuccess(response.data))
   } catch (e) {
-    yield put(loadFailure())
+    yield put(articlesFailed())
   }
 }

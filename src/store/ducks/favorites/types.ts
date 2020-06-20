@@ -5,12 +5,17 @@ import { addFavorite } from './sagas';
 export enum FavoritesTypes {
   FETCH_FAVORITES = '@favorites/FETCH_FAVORITES',
   FAVORITES_SUCCESS = '@favorites/FAVORITES_SUCCESS',
-  FAVORITES_FAILURE = '@favorites/FAVORITES_FAILURE',
-  ADD_FAVORITE = '@favorites/ADD_FAVORITE'
+  ADD_FAVORITE = '@favorites/ADD_FAVORITE',
+  REMOVE_FAVORITE = '@favorites/REMOVE_FAVORITE'
 }
 
 export interface AddFavoriteAction {
   type: typeof FavoritesTypes.ADD_FAVORITE
+  payload: string
+}
+
+export interface RemoveFavoriteAction {
+  type: typeof FavoritesTypes.REMOVE_FAVORITE
   payload: string
 }
 
@@ -25,13 +30,4 @@ export interface Article {
   description: string
   types: string[]
   downloadUrl: string
-}
-
-/**
- * State type
- */
-export interface FavoritesState {
-  readonly data: Article[]
-  readonly loading: boolean
-  readonly error: boolean
 }

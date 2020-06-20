@@ -1,14 +1,13 @@
 import { action } from 'typesafe-actions'
-import { FavoritesTypes, Article } from './types'
+import { FavoritesTypes } from './types'
 
-export const fetchFavorites = (query: string) =>
-  action(FavoritesTypes.FETCH_FAVORITES, query)
+export const fetchFavorites = () => action(FavoritesTypes.FETCH_FAVORITES)
 
-export const fetchFavoritesSuccess = (data: Article[]) =>
-  action(FavoritesTypes.FAVORITES_SUCCESS, data)
-
-export const fetchFavoritesFailure = () =>
-  action(FavoritesTypes.FAVORITES_FAILURE)
+export const favoritesSuccess = (favorites: string[]) =>
+  action(FavoritesTypes.FAVORITES_SUCCESS, favorites)
 
 export const addFavorite = (id: string) =>
   action(FavoritesTypes.ADD_FAVORITE, id)
+
+export const removeFavorite = (id: string) =>
+  action(FavoritesTypes.REMOVE_FAVORITE, id)

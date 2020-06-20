@@ -6,6 +6,7 @@ import rootSaga from './ducks/root-saga'
 
 export interface ApplicationState {
   articles: ArticlesState
+  favorites: string[]
 }
 
 const sagaMiddleware = createSagaMiddleware()

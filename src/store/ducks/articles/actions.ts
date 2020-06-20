@@ -1,10 +1,10 @@
 import { action } from 'typesafe-actions'
 import { ArticlesTypes, Article } from './types'
 
-export const loadRequest = (query: string) =>
+export const fetchArticles = (query: string) =>
   action(ArticlesTypes.FETCH_ARTICLES, query)
 
-export const loadSuccess = (data: Article[]) =>
+export const articlesSuccess = (data: Article[]) =>
   action(ArticlesTypes.ARTICLES_SUCCESS, data)
 
-export const loadFailure = () => action(ArticlesTypes.ARTICLES_FAILURE)
+export const articlesFailed = () => action(ArticlesTypes.ARTICLES_FAILURE)
