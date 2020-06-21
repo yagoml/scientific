@@ -32,6 +32,7 @@ interface DispathProps {
   addFavorite(id: string): Action
   removeFavorite(id: string): Action
   fetchFavorites(): Action
+  setFilters(filters: ArticlesFilters): Action
 }
 
 type Props = StateProps & DispathProps
@@ -182,7 +183,8 @@ class Articles extends Component<Props> {
     removeFavorite(id)
   }
 
-  onPageChanged = (page: number) => {
+  onPageChanged = async (page: number) => {
+    await this.props.setFilters({ ...this.props.filters, ...{ page: page } })
     this.apply()
   }
 
