@@ -3,55 +3,36 @@ import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch, Action } from 'redux'
 import { ApplicationState } from '../../../store/index'
 import {
-  Article,
   FetchArticlesPayload,
   ArticlesFilters
 } from '../../../store/ducks/articles/types'
 import * as ArticlesActions from '../../../store/ducks/articles/actions'
 import * as FavoritesActions from '../../../store/ducks/favorites/actions'
 import Spinner from 'react-bootstrap/Spinner'
-import Table from 'react-bootstrap/Table'
-import { Star, StarFill } from 'react-bootstrap-icons'
 import './style.scss'
 import queryString from 'query-string'
 import Pagination from '../../Pagination'
 import Filters from './../Filters'
 import { History, LocationState } from 'history'
+import DataTable from '../DataTable'
 
 interface StateProps {
-  articles: Article[]
   total: number
   loading: boolean
-  favorites: string[]
   filters: ArticlesFilters
   history: History<LocationState>
 }
 
-interface DispathProps {
+interface DispatchProps {
   fetchArticles(params: FetchArticlesPayload): Action
-  addFavorite(id: string): Action
-  removeFavorite(id: string): Action
-  fetchFavorites(): Action
   setFilters(filters: ArticlesFilters): Action
 }
 
-type Props = StateProps & DispathProps
+type Props = StateProps & DispatchProps
 
 class Articles extends Component<Props> {
-  searchFilters: React.RefObject<typeof Filters>
-
-  constructor(props: Props) {
-    super(props)
-    this.searchFilters = React.createRef()
-  }
-
-  componentDidMount() {
-    const { fetchFavorites } = this.props
-    fetchFavorites()
-  }
-
   render() {
-    const { articles, total, loading, favorites } = this.props
+    const { total, loading } = this.props
 
     return (
       <div className="articles">
@@ -74,56 +55,7 @@ class Articles extends Component<Props> {
             <div className="mb-3 articles__found">
               <strong>{total.toLocaleString()}</strong> artigo(s) encontrado(s):
             </div>
-            <Table hover className="articles__table">
-              <thead>
-                <tr>
-                  <th>Autores</th>
-                  <th>Tipo</th>
-                  <th>Título</th>
-                  <th>Descrição</th>
-                  <th>URL</th>
-                  <th>Favorito</th>
-                </tr>
-              </thead>
-              <tbody>
-                {articles.map(article => (
-                  <tr key={article.id}>
-                    <td>{article.authors}</td>
-                    <td>{article.types}</td>
-                    <td>{article.title}</td>
-                    <td>{article.description}</td>
-                    <td>
-                      <a href={article.downloadUrl} title={article.downloadUrl}>
-                        {this.getUrlAlias(article.downloadUrl)}
-                      </a>
-                    </td>
-                    <td>
-                      {!favorites.includes(article.id) ? (
-                        <button
-                          className="btn favorite"
-                          title="Adicionar aos favoritos"
-                          onClick={() => this.addFavorite(article.id)}
-                        >
-                          <Star color="#0069d9" size={24} />
-                        </button>
-                      ) : (
-                        <button
-                          className="btn favorite--filled"
-                          title="Remover dos favoritos"
-                          onClick={() => this.removeFavorite(article.id)}
-                        >
-                          <StarFill
-                            color="#0069d9"
-                            size={24}
-                            className="favorite"
-                          />
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+            <DataTable />
             <div className="d-flex align-content-center justify-content-center">
               <Pagination
                 currentPage={this.getPage()}
@@ -164,23 +96,8 @@ class Articles extends Component<Props> {
     return parseInt(queryString.toString())
   }
 
-  getUrlAlias = (url: string) => {
-    const split = url.split('/')
-    return split[split.length - 1]
-  }
-
   getQuery = () => {
     return queryString.parse(window.location.search)
-  }
-
-  addFavorite = (id: string) => {
-    const { addFavorite } = this.props
-    addFavorite(id)
-  }
-
-  removeFavorite = (id: string) => {
-    const { removeFavorite } = this.props
-    removeFavorite(id)
   }
 
   onPageChanged = async (page: number) => {
@@ -201,10 +118,8 @@ class Articles extends Component<Props> {
 }
 
 const mapStateToProps = (state: ApplicationState) => ({
-  articles: state.articles.data,
   total: state.articles.total,
   loading: state.articles.loading,
-  favorites: state.favorites,
   filters: state.articles.filters
 })
 
