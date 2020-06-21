@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch, Action } from 'redux'
 import { ApplicationState } from './../../store/index'
-import { Article } from '../../store/ducks/articles/types'
+import { Article, FetchArticlesPayload } from '../../store/ducks/articles/types'
 import * as ArticlesActions from '../../store/ducks/articles/actions'
 import * as FavoritesActions from '../../store/ducks/favorites/actions'
 import Form from 'react-bootstrap/Form'
@@ -13,9 +13,11 @@ import { Star, Search, StarFill } from 'react-bootstrap-icons'
 import './style.scss'
 import { History, LocationState } from 'history'
 import queryString from 'query-string'
+import Pagination from '../Pagination'
 
 interface StateProps {
   articles: Article[]
+  total: number
   loading: boolean
   favorites: string[]
   history: History<LocationState>
@@ -23,7 +25,7 @@ interface StateProps {
 }
 
 interface DispathProps {
-  fetchArticles(query: string): Action
+  fetchArticles(params: FetchArticlesPayload): Action
   addFavorite(id: string): Action
   removeFavorite(id: string): Action
   fetchFavorites(): Action
@@ -33,19 +35,20 @@ interface LocalState {
   searchTerms: string
 }
 
+interface QueryUri {
+  searchTerms: string
+  page: number
+}
+
 type Props = StateProps & DispathProps
 
 class Articles extends Component<Props, LocalState> {
   constructor(props: Props) {
     super(props)
-    const query = queryString.parse(this.props.location.search)
-    let searchTerms = ''
-    if (query && query.terms) searchTerms = query.terms.toString()
-    this.state = { searchTerms: searchTerms }
-  }
-
-  componentWillReceiveProps() {
-    console.log(queryString.parse(this.props.location.search))
+    const query = this.getQuery()
+    this.state = {
+      searchTerms: query.terms ? query.terms.toString() : ''
+    }
   }
 
   componentDidMount() {
@@ -55,7 +58,7 @@ class Articles extends Component<Props, LocalState> {
   }
 
   render() {
-    const { articles, loading, favorites } = this.props
+    const { articles, total, loading, favorites } = this.props
 
     return (
       <div className="articles">
@@ -95,57 +98,66 @@ class Articles extends Component<Props, LocalState> {
             </Spinner>
           </div>
         )}
-        {articles.length > 0 && !loading && (
-          <Table hover className="articles__table">
-            <thead>
-              <tr>
-                <th>Autores</th>
-                <th>Tipo</th>
-                <th>Título</th>
-                <th>Descrição</th>
-                <th>URL</th>
-                <th>Favorito</th>
-              </tr>
-            </thead>
-            <tbody>
-              {articles.map(article => (
-                <tr key={article.id}>
-                  <td>{article.authors}</td>
-                  <td>{article.types}</td>
-                  <td>{article.title}</td>
-                  <td>{article.description}</td>
-                  <td>
-                    <a href={article.downloadUrl} title={article.downloadUrl}>
-                      {this.getUrlAlias(article.downloadUrl)}
-                    </a>
-                  </td>
-                  <td>
-                    {!favorites.includes(article.id) ? (
-                      <button
-                        className="btn favorite"
-                        title="Adicionar aos favoritos"
-                        onClick={() => this.addFavorite(article.id)}
-                      >
-                        <Star color="#0069d9" size={24} />
-                      </button>
-                    ) : (
-                      <button
-                        className="btn favorite--filled"
-                        title="Remover dos favoritos"
-                        onClick={() => this.removeFavorite(article.id)}
-                      >
-                        <StarFill
-                          color="#0069d9"
-                          size={24}
-                          className="favorite"
-                        />
-                      </button>
-                    )}
-                  </td>
+        {total > 0 && !loading && (
+          <div>
+            <Table hover className="articles__table">
+              <thead>
+                <tr>
+                  <th>Autores</th>
+                  <th>Tipo</th>
+                  <th>Título</th>
+                  <th>Descrição</th>
+                  <th>URL</th>
+                  <th>Favorito</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {articles.map(article => (
+                  <tr key={article.id}>
+                    <td>{article.authors}</td>
+                    <td>{article.types}</td>
+                    <td>{article.title}</td>
+                    <td>{article.description}</td>
+                    <td>
+                      <a href={article.downloadUrl} title={article.downloadUrl}>
+                        {this.getUrlAlias(article.downloadUrl)}
+                      </a>
+                    </td>
+                    <td>
+                      {!favorites.includes(article.id) ? (
+                        <button
+                          className="btn favorite"
+                          title="Adicionar aos favoritos"
+                          onClick={() => this.addFavorite(article.id)}
+                        >
+                          <Star color="#0069d9" size={24} />
+                        </button>
+                      ) : (
+                        <button
+                          className="btn favorite--filled"
+                          title="Remover dos favoritos"
+                          onClick={() => this.removeFavorite(article.id)}
+                        >
+                          <StarFill
+                            color="#0069d9"
+                            size={24}
+                            className="favorite"
+                          />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+            <div className="d-flex align-content-center justify-content-center">
+              <Pagination
+                currentPage={this.getPage()}
+                totalRecords={total}
+                onPageChanged={(page: number) => this.onPageChanged(page)}
+              />
+            </div>
+          </div>
         )}
       </div>
     )
@@ -153,16 +165,24 @@ class Articles extends Component<Props, LocalState> {
 
   setTerms = (event: React.FormEvent) => {
     event.preventDefault()
-    this.props.history.push({
-      pathname: '/',
-      search: '?terms=' + this.state.searchTerms
+    this.updateUri({
+      page: this.getPage(),
+      searchTerms: this.state.searchTerms
     })
     this.search()
   }
 
+  getPage = () => {
+    const query = this.getQuery()
+    return query.page ? parseInt(query.page.toString()) : 1
+  }
+
   search = () => {
     const { fetchArticles } = this.props
-    fetchArticles(this.state.searchTerms)
+    fetchArticles({
+      query: this.state.searchTerms,
+      page: this.getPage()
+    })
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,6 +194,10 @@ class Articles extends Component<Props, LocalState> {
     return split[split.length - 1]
   }
 
+  getQuery = () => {
+    return queryString.parse(this.props.history.location.search)
+  }
+
   addFavorite = (id: string) => {
     const { addFavorite } = this.props
     addFavorite(id)
@@ -183,10 +207,23 @@ class Articles extends Component<Props, LocalState> {
     const { removeFavorite } = this.props
     removeFavorite(id)
   }
+
+  onPageChanged = (page: number) => {
+    this.updateUri({ page: page, searchTerms: this.state.searchTerms })
+    this.search()
+  }
+
+  updateUri = ({ page, searchTerms }: QueryUri) => {
+    this.props.history.push({
+      pathname: '/',
+      search: `?terms=${searchTerms}&page=${page}`
+    })
+  }
 }
 
 const mapStateToProps = (state: ApplicationState) => ({
   articles: state.articles.data,
+  total: state.articles.total,
   loading: state.articles.loading,
   favorites: state.favorites
 })

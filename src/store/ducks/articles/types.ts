@@ -7,9 +7,14 @@ export enum ArticlesTypes {
   ARTICLES_FAILURE = '@articles/ARTICLES_FAILURE'
 }
 
-export interface LoadRequestPayload {
+export interface FetchArticlesPayload {
+  query: string
+  page: number
+}
+
+export interface FetchArticlesAction {
   type: typeof ArticlesTypes.FETCH_ARTICLES
-  payload: string
+  payload: FetchArticlesPayload
 }
 
 /**
@@ -25,11 +30,17 @@ export interface Article {
   downloadUrl: string
 }
 
+export interface ArticlesData {
+  data: Article[]
+  total: number
+}
+
 /**
  * State type
  */
 export interface ArticlesState {
   readonly data: Article[]
+  readonly total: number
   readonly loading: boolean
   readonly error: boolean
 }

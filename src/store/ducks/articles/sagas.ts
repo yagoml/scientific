@@ -1,7 +1,7 @@
 import { articlesSuccess, articlesFailed } from './actions'
 import axios, { AxiosRequestConfig } from 'axios'
 import { call, put } from 'redux-saga/effects'
-import { LoadRequestPayload } from './types'
+import { FetchArticlesAction } from './types'
 
 /**
  * Core API key
@@ -26,9 +26,11 @@ const searchableFields = ['title', 'authors', 'description']
 /**
  * Request: Search for articles
  */
-export function* searchArticles({ payload }: LoadRequestPayload) {
+export function* searchArticles({ payload }: FetchArticlesAction) {
   const apiCall = async () => {
-    config.data = JSON.stringify([{ fields: searchableFields, query: payload }])
+    config.data = JSON.stringify([
+      { fields: searchableFields, query: payload.query, page: payload.page }
+    ])
     return axios(config)
       .then(response => response.data[0])
       .catch(error => {
@@ -38,7 +40,12 @@ export function* searchArticles({ payload }: LoadRequestPayload) {
 
   try {
     const response = yield call(apiCall)
-    yield put(articlesSuccess(response.data))
+    yield put(
+      articlesSuccess({
+        data: response.data,
+        total: response.totalHits
+      })
+    )
   } catch (e) {
     yield put(articlesFailed())
   }
