@@ -4,7 +4,8 @@
 export enum ArticlesTypes {
   FETCH_ARTICLES = '@articles/FETCH_ARTICLES',
   ARTICLES_SUCCESS = '@articles/ARTICLES_SUCCESS',
-  ARTICLES_FAILURE = '@articles/ARTICLES_FAILURE'
+  ARTICLES_FAILURE = '@articles/ARTICLES_FAILURE',
+  SET_FILTERS = '@articles/SET_FILTERS'
 }
 
 export interface FetchArticlesPayload {
@@ -35,7 +36,8 @@ export interface ArticlesData {
   total: number
 }
 
-export interface QueryUri {
+export interface ArticlesFilters {
+  [key: string]: string | number | (number | undefined)
   terms?: string
   page?: number
   startYear?: number
@@ -50,4 +52,5 @@ export interface ArticlesState {
   readonly total: number
   readonly loading: boolean
   readonly error: boolean
+  readonly filters: ArticlesFilters
 }

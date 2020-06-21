@@ -1,31 +1,30 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch, Action } from 'redux'
-import { ApplicationState } from './../../store/index'
+import { ApplicationState } from '../../../store/index'
 import {
   Article,
   FetchArticlesPayload,
-  QueryUri
-} from '../../store/ducks/articles/types'
-import * as ArticlesActions from '../../store/ducks/articles/actions'
-import * as FavoritesActions from '../../store/ducks/favorites/actions'
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+  ArticlesFilters
+} from '../../../store/ducks/articles/types'
+import * as ArticlesActions from '../../../store/ducks/articles/actions'
+import * as FavoritesActions from '../../../store/ducks/favorites/actions'
 import Spinner from 'react-bootstrap/Spinner'
 import Table from 'react-bootstrap/Table'
-import { Star, Search, StarFill } from 'react-bootstrap-icons'
+import { Star, StarFill } from 'react-bootstrap-icons'
 import './style.scss'
-import { History, LocationState } from 'history'
 import queryString from 'query-string'
-import Pagination from '../Pagination'
+import Pagination from '../../Pagination'
+import Filters from './../Filters'
+import { History, LocationState } from 'history'
 
 interface StateProps {
   articles: Article[]
   total: number
   loading: boolean
   favorites: string[]
+  filters: ArticlesFilters
   history: History<LocationState>
-  location: Location
 }
 
 interface DispathProps {
@@ -35,37 +34,19 @@ interface DispathProps {
   fetchFavorites(): Action
 }
 
-interface LocalState {
-  [key: string]: string | number | (number | undefined)
-  terms: string
-  page: number
-  startYear?: number
-  finishYear?: number
-}
-
 type Props = StateProps & DispathProps
 
-class Articles extends Component<Props, LocalState> {
+class Articles extends Component<Props> {
+  searchFilters: React.RefObject<typeof Filters>
+
   constructor(props: Props) {
     super(props)
-    const query = this.getQuery()
-    const initState: LocalState = {
-      terms: query.terms ? query.terms.toString() : '',
-      page: this.getPage()
-    }
-
-    if (query.startYear) initState.startYear = this.queryToInt(query.startYear)
-    if (query.finishYear)
-      initState.finishYear = this.queryToInt(query.finishYear)
-
-    this.state = initState
+    this.searchFilters = React.createRef()
   }
 
   componentDidMount() {
     const { fetchFavorites } = this.props
-    const { terms, startYear, finishYear } = this.state
     fetchFavorites()
-    if (terms.length || startYear || finishYear) this.search()
   }
 
   render() {
@@ -74,73 +55,7 @@ class Articles extends Component<Props, LocalState> {
     return (
       <div className="articles">
         <div className="articles__header">
-          <Form onSubmit={this.apply} className="articles__form">
-            <div className="d-flex align-items-center">
-              <div className="position-relative terms-wrapper">
-                <Form.Label>Pesquisar artigos</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Palavra(s) chave"
-                  value={this.state.terms}
-                  onChange={this.handleChange}
-                />
-                <Form.Text className="text-muted">
-                  Pesquise por <strong>título, descrição</strong> ou{' '}
-                  <strong>autores</strong>
-                </Form.Text>
-                <Button
-                  variant="primary"
-                  type="submit"
-                  className="mt-3 position-absolute articles__btn-search"
-                >
-                  <Search color="white" size={22} />
-                </Button>
-              </div>
-              <div className="ml-5">
-                <Form.Label>De</Form.Label>
-                <Form.Control
-                  as="select"
-                  custom
-                  name="startYear"
-                  value={this.state.startYear}
-                  onChange={this.yearSelected.bind(this)}
-                >
-                  <option></option>
-                  {this.buildYears().map((year: number) => {
-                    return (
-                      <option value={year} key={year}>
-                        {year}
-                      </option>
-                    )
-                  })}
-                </Form.Control>
-                <Form.Text className="text-muted">À partir do ano</Form.Text>
-              </div>
-              <div className="ml-3">
-                <Form.Label>Até</Form.Label>
-                <Form.Control
-                  as="select"
-                  custom
-                  name="finishYear"
-                  value={this.state.finishYear}
-                  onChange={this.yearSelected.bind(this)}
-                >
-                  <option></option>
-                  {this.buildYears().map((year: number) => {
-                    return (
-                      <option value={year} key={year}>
-                        {year}
-                      </option>
-                    )
-                  })}
-                </Form.Control>
-                <Form.Text className="text-muted">Até o ano</Form.Text>
-              </div>
-              <Button variant="primary" type="submit" className="ml-3 mt-2">
-                Aplicar
-              </Button>
-            </div>
-          </Form>
+          <Filters apply={this.apply.bind(this)} />
         </div>
 
         {loading && (
@@ -221,8 +136,7 @@ class Articles extends Component<Props, LocalState> {
     )
   }
 
-  apply = (event: React.FormEvent) => {
-    event.preventDefault()
+  apply = () => {
     this.updateUri()
     this.search()
   }
@@ -234,10 +148,11 @@ class Articles extends Component<Props, LocalState> {
 
   search = () => {
     const { fetchArticles } = this.props
-    const { terms, startYear, finishYear } = this.state
+    const { terms, startYear, finishYear } = this.props.filters
     let query = terms
     if (startYear) query += ' AND year:>=' + startYear
     if (finishYear) query += ' AND year:<=' + finishYear
+    if (!query) return
     fetchArticles({
       query: query,
       page: this.getPage()
@@ -248,24 +163,13 @@ class Articles extends Component<Props, LocalState> {
     return parseInt(queryString.toString())
   }
 
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ terms: event.target.value })
-  }
-
   getUrlAlias = (url: string) => {
     const split = url.split('/')
     return split[split.length - 1]
   }
 
   getQuery = () => {
-    return queryString.parse(this.props.history.location.search)
-  }
-
-  buildYears = () => {
-    let years = []
-    const currentYear = new Date().getFullYear()
-    for (let i = currentYear; i >= 1950; i--) years.push(i)
-    return years
+    return queryString.parse(window.location.search)
   }
 
   addFavorite = (id: string) => {
@@ -279,17 +183,11 @@ class Articles extends Component<Props, LocalState> {
   }
 
   onPageChanged = (page: number) => {
-    this.setState({ page: page })
+    this.apply()
   }
 
   buildQuery = (): string => {
-    const query: QueryUri = {}
-    const { terms, startYear, finishYear, page } = this.state
-    if (terms) query.terms = terms
-    if (page) query.page = page
-    if (startYear) query.startYear = startYear
-    if (finishYear) query.finishYear = finishYear
-    return queryString.stringify(query)
+    return queryString.stringify(this.props.filters)
   }
 
   updateUri = () => {
@@ -298,19 +196,14 @@ class Articles extends Component<Props, LocalState> {
       search: this.buildQuery()
     })
   }
-
-  yearSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const year = parseInt(event.target.value)
-    const key = event.target.name
-    this.setState({ [key]: year ? year : undefined })
-  }
 }
 
 const mapStateToProps = (state: ApplicationState) => ({
   articles: state.articles.data,
   total: state.articles.total,
   loading: state.articles.loading,
-  favorites: state.favorites
+  favorites: state.favorites,
+  filters: state.articles.filters
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) =>

@@ -4,17 +4,20 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'font-awesome/css/font-awesome.min.css'
 import { Provider } from 'react-redux'
 import store from './store'
-import { BrowserRouter, Route } from 'react-router-dom'
-import Articles from './components/Articles'
+import { Router, Route } from 'react-router-dom'
+import Articles from './components/Articles/Search'
 import Container from 'react-bootstrap/Container'
+import { createBrowserHistory } from 'history'
+
+let history = createBrowserHistory()
 
 function App() {
   return (
     <Container fluid className="app">
       <Provider store={store}>
-        <BrowserRouter>
+        <Router history={history}>
           <Route path="/" component={Articles} exact />
-        </BrowserRouter>
+        </Router>
       </Provider>
     </Container>
   )
