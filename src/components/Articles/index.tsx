@@ -2,7 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch, Action } from 'redux'
 import { ApplicationState } from './../../store/index'
-import { Article, FetchArticlesPayload } from '../../store/ducks/articles/types'
+import {
+  Article,
+  FetchArticlesPayload,
+  QueryUri
+} from '../../store/ducks/articles/types'
 import * as ArticlesActions from '../../store/ducks/articles/actions'
 import * as FavoritesActions from '../../store/ducks/favorites/actions'
 import Form from 'react-bootstrap/Form'
@@ -32,12 +36,11 @@ interface DispathProps {
 }
 
 interface LocalState {
-  searchTerms: string
-}
-
-interface QueryUri {
-  searchTerms: string
+  [key: string]: string | number | (number | undefined)
+  terms: string
   page: number
+  startYear?: number
+  finishYear?: number
 }
 
 type Props = StateProps & DispathProps
@@ -46,15 +49,23 @@ class Articles extends Component<Props, LocalState> {
   constructor(props: Props) {
     super(props)
     const query = this.getQuery()
-    this.state = {
-      searchTerms: query.terms ? query.terms.toString() : ''
+    const initState: LocalState = {
+      terms: query.terms ? query.terms.toString() : '',
+      page: this.getPage()
     }
+
+    if (query.startYear) initState.startYear = this.queryToInt(query.startYear)
+    if (query.finishYear)
+      initState.finishYear = this.queryToInt(query.finishYear)
+
+    this.state = initState
   }
 
   componentDidMount() {
     const { fetchFavorites } = this.props
+    const { terms, startYear, finishYear } = this.state
     fetchFavorites()
-    if (this.state.searchTerms.length) this.search()
+    if (terms.length || startYear || finishYear) this.search()
   }
 
   render() {
@@ -63,28 +74,72 @@ class Articles extends Component<Props, LocalState> {
     return (
       <div className="articles">
         <div className="articles__header">
-          <Form
-            onSubmit={this.setTerms}
-            className="position-relative articles__form mb-5"
-          >
-            <Form.Label>Pesquisar artigos</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Palavra(s) chave"
-              value={this.state.searchTerms}
-              onChange={this.handleChange}
-            />
-            <Form.Text className="text-muted">
-              Pesquise por <strong>título, descrição</strong> ou{' '}
-              <strong>autores</strong>
-            </Form.Text>
-            <Button
-              variant="primary"
-              type="submit"
-              className="mt-3 position-absolute articles__btn-search"
-            >
-              <Search color="white" size={22} />
-            </Button>
+          <Form onSubmit={this.apply} className="articles__form">
+            <div className="d-flex align-items-center">
+              <div className="position-relative terms-wrapper">
+                <Form.Label>Pesquisar artigos</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Palavra(s) chave"
+                  value={this.state.terms}
+                  onChange={this.handleChange}
+                />
+                <Form.Text className="text-muted">
+                  Pesquise por <strong>título, descrição</strong> ou{' '}
+                  <strong>autores</strong>
+                </Form.Text>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  className="mt-3 position-absolute articles__btn-search"
+                >
+                  <Search color="white" size={22} />
+                </Button>
+              </div>
+              <div className="ml-5">
+                <Form.Label>De</Form.Label>
+                <Form.Control
+                  as="select"
+                  custom
+                  name="startYear"
+                  value={this.state.startYear}
+                  onChange={this.yearSelected.bind(this)}
+                >
+                  <option></option>
+                  {this.buildYears().map((year: number) => {
+                    return (
+                      <option value={year} key={year}>
+                        {year}
+                      </option>
+                    )
+                  })}
+                </Form.Control>
+                <Form.Text className="text-muted">À partir do ano</Form.Text>
+              </div>
+              <div className="ml-3">
+                <Form.Label>Até</Form.Label>
+                <Form.Control
+                  as="select"
+                  custom
+                  name="finishYear"
+                  value={this.state.finishYear}
+                  onChange={this.yearSelected.bind(this)}
+                >
+                  <option></option>
+                  {this.buildYears().map((year: number) => {
+                    return (
+                      <option value={year} key={year}>
+                        {year}
+                      </option>
+                    )
+                  })}
+                </Form.Control>
+                <Form.Text className="text-muted">Até o ano</Form.Text>
+              </div>
+              <Button variant="primary" type="submit" className="ml-3 mt-2">
+                Aplicar
+              </Button>
+            </div>
           </Form>
         </div>
 
@@ -99,7 +154,10 @@ class Articles extends Component<Props, LocalState> {
           </div>
         )}
         {total > 0 && !loading && (
-          <div>
+          <>
+            <div className="mb-3 articles__found">
+              <strong>{total.toLocaleString()}</strong> artigo(s) encontrado(s):
+            </div>
             <Table hover className="articles__table">
               <thead>
                 <tr>
@@ -157,18 +215,15 @@ class Articles extends Component<Props, LocalState> {
                 onPageChanged={(page: number) => this.onPageChanged(page)}
               />
             </div>
-          </div>
+          </>
         )}
       </div>
     )
   }
 
-  setTerms = (event: React.FormEvent) => {
+  apply = (event: React.FormEvent) => {
     event.preventDefault()
-    this.updateUri({
-      page: this.getPage(),
-      searchTerms: this.state.searchTerms
-    })
+    this.updateUri()
     this.search()
   }
 
@@ -179,14 +234,22 @@ class Articles extends Component<Props, LocalState> {
 
   search = () => {
     const { fetchArticles } = this.props
+    const { terms, startYear, finishYear } = this.state
+    let query = terms
+    if (startYear) query += ' AND year:>=' + startYear
+    if (finishYear) query += ' AND year:<=' + finishYear
     fetchArticles({
-      query: this.state.searchTerms,
+      query: query,
       page: this.getPage()
     })
   }
 
+  queryToInt = (queryString: string | string[]) => {
+    return parseInt(queryString.toString())
+  }
+
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchTerms: event.target.value })
+    this.setState({ terms: event.target.value })
   }
 
   getUrlAlias = (url: string) => {
@@ -196,6 +259,13 @@ class Articles extends Component<Props, LocalState> {
 
   getQuery = () => {
     return queryString.parse(this.props.history.location.search)
+  }
+
+  buildYears = () => {
+    let years = []
+    const currentYear = new Date().getFullYear()
+    for (let i = currentYear; i >= 1950; i--) years.push(i)
+    return years
   }
 
   addFavorite = (id: string) => {
@@ -209,15 +279,30 @@ class Articles extends Component<Props, LocalState> {
   }
 
   onPageChanged = (page: number) => {
-    this.updateUri({ page: page, searchTerms: this.state.searchTerms })
-    this.search()
+    this.setState({ page: page })
   }
 
-  updateUri = ({ page, searchTerms }: QueryUri) => {
+  buildQuery = (): string => {
+    const query: QueryUri = {}
+    const { terms, startYear, finishYear, page } = this.state
+    if (terms) query.terms = terms
+    if (page) query.page = page
+    if (startYear) query.startYear = startYear
+    if (finishYear) query.finishYear = finishYear
+    return queryString.stringify(query)
+  }
+
+  updateUri = () => {
     this.props.history.push({
       pathname: '/',
-      search: `?terms=${searchTerms}&page=${page}`
+      search: this.buildQuery()
     })
+  }
+
+  yearSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const year = parseInt(event.target.value)
+    const key = event.target.name
+    this.setState({ [key]: year ? year : undefined })
   }
 }
 

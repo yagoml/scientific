@@ -40,9 +40,9 @@ class Pagination extends Component<PaginationProps, LocalState> {
   constructor(props: PaginationProps) {
     super(props)
     const {
-      totalRecords = null,
+      totalRecords = 0,
       pageLimit = 10,
-      pageNeighbours = 0,
+      pageNeighbours = 2,
       currentPage = 1
     } = props
 
@@ -190,10 +190,6 @@ class Pagination extends Component<PaginationProps, LocalState> {
       </Fragment>
     )
   }
-
-  // componentDidMount() {
-  //   this.gotoPage(1)
-  // }
 
   gotoPage = (page: number) => {
     const { onPageChanged = (f: Function) => f } = this.props

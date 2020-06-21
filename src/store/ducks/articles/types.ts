@@ -35,6 +35,13 @@ export interface ArticlesData {
   total: number
 }
 
+export interface QueryUri {
+  terms?: string
+  page?: number
+  startYear?: number
+  finishYear?: number
+}
+
 /**
  * State type
  */
