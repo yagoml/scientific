@@ -1,0 +1,20 @@
+@import 'src/variables';
+
+.app-header {
+  height: 60px;
+  background-color: $eletric-violet;
+  padding: 10px 45px;
+
+  a {
+    color: white;
+  }
+
+  &__logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  &__link {
+    padding: 30px;
+  }
+}

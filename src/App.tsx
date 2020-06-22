@@ -5,21 +5,27 @@ import 'font-awesome/css/font-awesome.min.css'
 import { Provider } from 'react-redux'
 import store from './store'
 import { Router, Route } from 'react-router-dom'
-import Articles from './components/Articles/Search'
+import Favorites from './views/Favorites'
 import Container from 'react-bootstrap/Container'
 import { createBrowserHistory } from 'history'
+import Search from './views/Search'
+import AppHeader from './components/AppHeader'
 
 let history = createBrowserHistory()
 
 function App() {
   return (
-    <Container fluid className="app">
-      <Provider store={store}>
-        <Router history={history}>
-          <Route path="/" component={Articles} exact />
-        </Router>
-      </Provider>
-    </Container>
+    <div className="app">
+      <Router history={history}>
+        <Provider store={store}>
+          <AppHeader />
+          <Container fluid>
+            <Route path="/" component={Search} exact />
+            <Route path="/favorites" component={Favorites} />
+          </Container>
+        </Provider>
+      </Router>
+    </div>
   )
 }
 

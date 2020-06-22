@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators, Dispatch, Action } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { ApplicationState } from '../../../store/index'
 import {
   FetchArticlesPayload,
@@ -12,7 +12,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import './style.scss'
 import queryString from 'query-string'
 import Pagination from '../../Pagination'
-import Filters from './../Filters'
+import Filters from '../Filters'
 import { History, LocationState } from 'history'
 import DataTable from '../DataTable'
 
@@ -20,12 +20,12 @@ interface StateProps {
   total: number
   loading: boolean
   filters: ArticlesFilters
-  history: History<LocationState>
+  history?: History<LocationState>
 }
 
 interface DispatchProps {
-  fetchArticles(params: FetchArticlesPayload): Action
-  setFilters(filters: ArticlesFilters): Action
+  fetchArticles(params: FetchArticlesPayload): void
+  setFilters(filters: ArticlesFilters): void
 }
 
 type Props = StateProps & DispatchProps
@@ -110,6 +110,7 @@ class Articles extends Component<Props> {
   }
 
   updateUri = () => {
+    if (!this.props.history) return
     this.props.history.push({
       pathname: '/',
       search: this.buildQuery()

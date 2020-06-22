@@ -9,7 +9,11 @@ import { ApplicationState } from '../../../store/index'
 import * as ArticlesActions from '../../../store/ducks/articles/actions'
 import { connect } from 'react-redux'
 
-interface LocalProps {
+interface StateProps {
+  filters: ArticlesFilters
+}
+
+interface OwnProps {
   apply: Function
 }
 
@@ -17,7 +21,7 @@ interface DispathProps {
   setFilters(filters: ArticlesFilters): Action
 }
 
-type Props = LocalProps & DispathProps
+type Props = StateProps & DispathProps & OwnProps
 
 class Filters extends Component<Props, ArticlesFilters> {
   constructor(props: Props) {
@@ -149,11 +153,11 @@ class Filters extends Component<Props, ArticlesFilters> {
   }
 }
 
-const mapStateToProps = (state: ApplicationState) => ({
+const mapStateToProps = (state: ApplicationState): StateProps => ({
   filters: state.articles.filters
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ ...ArticlesActions }, dispatch)
+  bindActionCreators(ArticlesActions, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filters)

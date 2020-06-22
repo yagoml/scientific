@@ -15,15 +15,15 @@ interface StateProps {
 interface DispatchProps {
   addFavorite(id: string): void
   removeFavorite(id: string): void
-  fetchFavorites(): void
+  fetchFavoritesIDs(): void
 }
 
 type Props = StateProps & DispatchProps
 
 class DataTable extends Component<Props> {
   componentDidMount() {
-    const { fetchFavorites } = this.props
-    fetchFavorites()
+    const { fetchFavoritesIDs } = this.props
+    fetchFavoritesIDs()
   }
 
   render() {
@@ -97,7 +97,7 @@ class DataTable extends Component<Props> {
 
 const mapStateToProps = (state: ApplicationState): StateProps => ({
   articles: state.articles.data,
-  favorites: state.favorites
+  favorites: state.favorites.ids
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) =>

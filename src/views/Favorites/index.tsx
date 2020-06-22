@@ -7,7 +7,7 @@ export default class Favorites extends Component {
   render() {
     return (
       <div className="favorites">
-        <h1>{this.pageTitle}</h1>
+        <h1 className="mb-4">{this.pageTitle}</h1>
         <DataTable />
       </div>
     )
