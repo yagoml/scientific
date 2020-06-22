@@ -1,12 +1,49 @@
 import { AddFavoriteAction, RemoveFavoriteAction } from './types'
-import { put } from 'redux-saga/effects'
-import { favoritesSuccess } from './actions'
+import { call, put } from 'redux-saga/effects'
+import {
+  favoritesIDsSuccess,
+  favoritesSuccess,
+  favoritesFailed
+} from './actions'
+import Core from '../../../services/core'
+import axios from 'axios'
 
 const LS_KEY = 'scientific_favorites'
 
+/**
+ * Request: Search for articles
+ */
 export function* fetchFavorites() {
+  const apiCall = async () => {
+    const config = Core.getRequestConfig({
+      path: 'get',
+      data: JSON.stringify(getItems())
+    })
+    return axios(config)
+      .then(response => response.data)
+      .catch(error => {
+        throw error
+      })
+  }
+
   try {
-    yield put(favoritesSuccess(getItems()))
+    const response = yield call(apiCall)
+    const data: any[] = []
+    response.map((r: any) => data.push(r.data))
+    yield put(
+      favoritesSuccess({
+        data: data,
+        total: response.length
+      })
+    )
+  } catch (e) {
+    yield put(favoritesFailed())
+  }
+}
+
+export function* fetchFavoritesIDs() {
+  try {
+    yield put(favoritesIDsSuccess(getItems()))
   } catch (e) {
     return console.error(e)
   }
@@ -23,7 +60,7 @@ export function* addFavorite({ payload }: AddFavoriteAction) {
       lsItems.push(payload)
       setFavorites(lsItems)
     }
-    yield put(favoritesSuccess(getItems()))
+    yield put(favoritesIDsSuccess(getItems()))
   } catch (e) {
     return console.error(e)
   }
@@ -39,7 +76,7 @@ export function* removeFavorite({ payload }: RemoveFavoriteAction) {
         setFavorites(lsItems)
       }
     }
-    yield put(favoritesSuccess(getItems()))
+    yield put(favoritesIDsSuccess(getItems()))
   } catch (e) {
     return console.error(e)
   }
