@@ -1,33 +1,9 @@
 .articles {
-  $input-height: 40px;
-
   &__header {
     padding: 15px 30px 20px 30px;
   }
 
-  &__form {
-    .form-control {
-      height: $input-height;
-
-      &:focus {
-        box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
-      }
-    }
-
-    .terms-wrapper {
-      width: 400px;
-    }
-  }
-
-  &__btn-search {
-    height: $input-height;
-    top: 16px;
-    right: 0;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-
   &__found {
-    color: #a3a3a3;
+    padding: 0 30px;
   }
 }

@@ -1,5 +1,7 @@
 @import 'src/variables';
 
+$text-shadow: 1px 1px black;
+
 body {
   background-color: $porcelain !important;
 }
@@ -7,8 +9,58 @@ body {
 .app {
   h1 {
     color: $yellow;
-    font-size: 34px;
+    font-size: 30px;
     margin: 15px 0;
+    padding: 0 30px;
+    text-shadow: $text-shadow;
+  }
+
+  td {
+    vertical-align: middle !important;
+  }
+
+  .form-control,
+  .custom-select {
+    height: 40px;
+
+    &:focus {
+      box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
+    }
+  }
+
+  .page-item {
+    .page-link {
+      cursor: pointer;
+      color: $eletric-violet;
+    }
+
+    &.active {
+      .page-link {
+        background-color: $eletric-violet !important;
+        border-color: $eletric-violet !important;
+        color: $yellow;
+      }
+    }
+  }
+
+  .btn {
+    &-primary {
+      background-color: $eletric-violet;
+      border-color: $eletric-violet;
+
+      &:hover {
+        background-color: $eletric-violet;
+        color: $yellow;
+        box-shadow: 0 0 0 1px $yellow;
+
+        svg {
+          fill: $yellow;
+        }
+      }
+    }
+  }
+
+  .px30 {
     padding: 0 30px;
   }
 }
