@@ -141,30 +141,28 @@ class LargePagination extends Component<PaginationProps, LocalState> {
               if (page === LEFT_PAGE)
                 return (
                   <li key={index} className="page-item">
-                    <a
+                    <div
                       className="page-link"
-                      href="#"
                       aria-label="Previous"
                       onClick={this.handleMoveLeft}
                     >
                       <span aria-hidden="true">&laquo;</span>
                       <span className="sr-only">Previous</span>
-                    </a>
+                    </div>
                   </li>
                 )
 
               if (page === RIGHT_PAGE)
                 return (
                   <li key={index} className="page-item">
-                    <a
+                    <div
                       className="page-link"
-                      href="#"
                       aria-label="Next"
                       onClick={this.handleMoveRight}
                     >
                       <span aria-hidden="true">&raquo;</span>
                       <span className="sr-only">Next</span>
-                    </a>
+                    </div>
                   </li>
                 )
 
@@ -175,13 +173,12 @@ class LargePagination extends Component<PaginationProps, LocalState> {
                     currentPage === page ? ' active' : ''
                   }`}
                 >
-                  <a
+                  <div
                     className="page-link"
-                    href="#"
                     onClick={this.handleClick(page.toString())}
                   >
                     {page}
-                  </a>
+                  </div>
                 </li>
               )
             })}
