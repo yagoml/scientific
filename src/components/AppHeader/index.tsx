@@ -7,7 +7,7 @@ export default class index extends Component {
     return (
       <div className="d-flex align-items-center app-header">
         <Link to="/" title="Scientific (Busca)">
-          <img src="logo.png" className="app-header__logo" />
+          <img src="logo.png" className="app-header__logo" alt="logo" />
         </Link>
         <Link to="/favorites" className="app-header__link">
           Artigos favoritos
