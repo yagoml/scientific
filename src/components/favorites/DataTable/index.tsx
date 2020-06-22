@@ -10,6 +10,7 @@ import Loader from '../../Loader'
 import history from '../../../history'
 import queryString from 'query-string'
 import { Trash } from 'react-bootstrap-icons'
+import { Link } from 'react-router-dom'
 
 interface StateProps {
   articles: Article[]
@@ -50,7 +51,7 @@ class DataTable extends Component<Props, OwnState> {
         {loading && <Loader />}
         {total > 0 && !loading && (
           <>
-            <Table hover className="articles__table">
+            <Table hover>
               <thead>
                 <tr>
                   <th>Autores</th>
@@ -73,8 +74,9 @@ class DataTable extends Component<Props, OwnState> {
                         href={article.downloadUrl}
                         title={article.downloadUrl}
                         target="_blank"
+                        rel="noopener noreferrer"
                       >
-                        {this.getUrlAlias(article.downloadUrl)}
+                        Visualizar
                       </a>
                     </td>
                     <td>
@@ -83,7 +85,7 @@ class DataTable extends Component<Props, OwnState> {
                         title="Remover dos favoritos"
                         onClick={() => this.removeFavorite(article.id)}
                       >
-                        <Trash size={24} />
+                        <Trash color="#9a00f1" size={24} />
                       </button>
                     </td>
                   </tr>
@@ -95,13 +97,16 @@ class DataTable extends Component<Props, OwnState> {
             </div>
           </>
         )}
+        {total === 0 && !loading && (
+          <div className="px30">
+            Nenhum artigo favorito ainda. <br />
+            <Link to="/" className="btn btn-primary mt-3">
+              Voltar
+            </Link>
+          </div>
+        )}
       </div>
     )
-  }
-
-  getUrlAlias = (url: string) => {
-    const split = url.split('/')
-    return split[split.length - 1]
   }
 
   removeFavorite = (id: string) => {
