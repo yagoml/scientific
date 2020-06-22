@@ -16,6 +16,11 @@ export interface AddFavoriteAction {
   payload: string
 }
 
+export interface FetchFavoritesAction {
+  type: typeof FavoritesTypes.ADD_FAVORITE
+  payload: number
+}
+
 export interface RemoveFavoriteAction {
   type: typeof FavoritesTypes.REMOVE_FAVORITE
   payload: string

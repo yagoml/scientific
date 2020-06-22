@@ -94,14 +94,10 @@ class Articles extends Component<Props> {
     this.apply()
   }
 
-  buildQuery = (): string => {
-    return queryString.stringify(this.props.filters)
-  }
-
   updateUri = () => {
     history.push({
       pathname: '/',
-      search: this.buildQuery()
+      search: queryString.stringify(this.props.filters)
     })
   }
 }

@@ -1,4 +1,8 @@
-import { AddFavoriteAction, RemoveFavoriteAction } from './types'
+import {
+  AddFavoriteAction,
+  RemoveFavoriteAction,
+  FetchFavoritesAction
+} from './types'
 import { call, put } from 'redux-saga/effects'
 import {
   favoritesIDsSuccess,
@@ -7,17 +11,16 @@ import {
 } from './actions'
 import Core from '../../../services/core'
 import axios from 'axios'
-
-const LS_KEY = 'scientific_favorites'
+import FavoritesService from '../../../services/favorites'
 
 /**
  * Request: Search for articles
  */
-export function* fetchFavorites() {
-  const apiCall = async () => {
+export function* fetchFavorites({ payload }: FetchFavoritesAction) {
+  const apiCall = async (pageIDs: string[]) => {
     const config = Core.getRequestConfig({
       path: 'get',
-      data: JSON.stringify(getItems())
+      data: JSON.stringify(pageIDs)
     })
     return axios(config)
       .then(response => response.data)
@@ -27,13 +30,14 @@ export function* fetchFavorites() {
   }
 
   try {
-    const response = yield call(apiCall)
+    const pageIDs = FavoritesService.getItems(payload)
+    let response = yield call(apiCall, pageIDs)
     const data: any[] = []
     response.map((r: any) => data.push(r.data))
     yield put(
       favoritesSuccess({
         data: data,
-        total: response.length
+        total: FavoritesService.getTotal()
       })
     )
   } catch (e) {
@@ -43,7 +47,7 @@ export function* fetchFavorites() {
 
 export function* fetchFavoritesIDs() {
   try {
-    yield put(favoritesIDsSuccess(getItems()))
+    yield put(favoritesIDsSuccess(FavoritesService.getItems()))
   } catch (e) {
     return console.error(e)
   }
@@ -54,13 +58,13 @@ export function* fetchFavoritesIDs() {
  */
 export function* addFavorite({ payload }: AddFavoriteAction) {
   try {
-    const lsItems = getItems()
-    if (!lsItems.length) setFavorites([payload])
+    const lsItems = FavoritesService.getItems()
+    if (!lsItems.length) FavoritesService.setFavorites([payload])
     else if (!lsItems.includes(payload)) {
       lsItems.push(payload)
-      setFavorites(lsItems)
+      FavoritesService.setFavorites(lsItems)
     }
-    yield put(favoritesIDsSuccess(getItems()))
+    yield put(favoritesIDsSuccess(FavoritesService.getItems()))
   } catch (e) {
     return console.error(e)
   }
@@ -68,26 +72,16 @@ export function* addFavorite({ payload }: AddFavoriteAction) {
 
 export function* removeFavorite({ payload }: RemoveFavoriteAction) {
   try {
-    const lsItems = getItems()
+    const lsItems = FavoritesService.getItems()
     if (lsItems.length) {
       const index = lsItems.indexOf(payload)
       if (index >= 0) {
         lsItems.splice(index, 1)
-        setFavorites(lsItems)
+        FavoritesService.setFavorites(lsItems)
       }
     }
-    yield put(favoritesIDsSuccess(getItems()))
+    yield put(favoritesIDsSuccess(FavoritesService.getItems()))
   } catch (e) {
     return console.error(e)
   }
-}
-
-const setFavorites = (items: string[]) => {
-  localStorage.setItem(LS_KEY, JSON.stringify(items))
-}
-
-const getItems = () => {
-  const items = localStorage.getItem(LS_KEY)
-  if (!items) return []
-  return JSON.parse(items)
 }

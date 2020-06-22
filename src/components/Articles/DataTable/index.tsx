@@ -60,7 +60,7 @@ class DataTable extends Component<Props> {
                     title="Adicionar aos favoritos"
                     onClick={() => this.addFavorite(article.id)}
                   >
-                    <Star color="#0069d9" size={24} />
+                    <Star color="#9a00f1" size={24} />
                   </button>
                 ) : (
                   <button
@@ -68,7 +68,7 @@ class DataTable extends Component<Props> {
                     title="Remover dos favoritos"
                     onClick={() => this.removeFavorite(article.id)}
                   >
-                    <StarFill color="#0069d9" size={24} className="favorite" />
+                    <StarFill color="#9a00f1" size={24} className="favorite" />
                   </button>
                 )}
               </td>
