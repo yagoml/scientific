@@ -8,6 +8,7 @@ import { Action, Dispatch, bindActionCreators } from 'redux'
 import { ApplicationState } from '../../../store/index'
 import * as ArticlesActions from '../../../store/ducks/articles/actions'
 import { connect } from 'react-redux'
+import './style.scss'
 
 interface StateProps {
   filters: ArticlesFilters
@@ -46,15 +47,16 @@ class Filters extends Component<Props, ArticlesFilters> {
 
   render() {
     return (
-      <Form onSubmit={this.applyFilters} className="articles__form">
+      <Form onSubmit={this.applyFilters} className="articles-form">
         <div className="d-flex align-items-center">
-          <div className="position-relative terms-wrapper">
+          <div className="position-relative articles-form__terms-wrapper">
             <Form.Label>Pesquisar artigos</Form.Label>
             <Form.Control
               type="text"
               placeholder="Palavra(s) chave"
               value={this.state.terms}
               onChange={this.handleChange}
+              style={{ padding: '6px 55px 6px 12px' }}
             />
             <Form.Text className="text-muted">
               Pesquise por <strong>título, descrição</strong> ou{' '}
@@ -63,7 +65,7 @@ class Filters extends Component<Props, ArticlesFilters> {
             <Button
               variant="primary"
               type="submit"
-              className="mt-3 position-absolute articles__btn-search"
+              className="mt-3 position-absolute articles-form__btn-search"
             >
               <Search color="white" size={22} />
             </Button>

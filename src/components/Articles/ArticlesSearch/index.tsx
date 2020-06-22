@@ -19,6 +19,7 @@ import history from '../../../history'
 interface StateProps {
   total: number
   loading: boolean
+  empty: boolean
   filters: ArticlesFilters
 }
 
@@ -31,7 +32,7 @@ type Props = StateProps & DispatchProps
 
 class Articles extends Component<Props> {
   render() {
-    const { total, loading } = this.props
+    const { total, loading, empty } = this.props
 
     return (
       <div className="articles">
@@ -53,6 +54,11 @@ class Articles extends Component<Props> {
               />
             </div>
           </>
+        )}
+        {empty && !loading && (
+          <div className="articles__found">
+            Nenhum artigo encontrado com os termos pesquisados.
+          </div>
         )}
       </div>
     )
@@ -105,7 +111,8 @@ class Articles extends Component<Props> {
 const mapStateToProps = (state: ApplicationState) => ({
   total: state.articles.total,
   loading: state.articles.loading,
-  filters: state.articles.filters
+  filters: state.articles.filters,
+  empty: state.articles.empty
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) =>

@@ -6,6 +6,7 @@ const INITIAL_STATE: ArticlesState = {
   total: 0,
   loading: false,
   error: false,
+  empty: false,
   filters: {
     terms: '',
     page: 1
@@ -22,7 +23,8 @@ const reducer: Reducer<ArticlesState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         data: action.payload.data,
-        total: action.payload.total
+        total: action.payload.total,
+        empty: action.payload.total === 0
       }
     case ArticlesTypes.ARTICLES_FAILURE:
       return { ...state, loading: false, error: true, data: [] }

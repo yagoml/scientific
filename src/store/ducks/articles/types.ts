@@ -52,5 +52,6 @@ export interface ArticlesState {
   readonly total: number
   readonly loading: boolean
   readonly error: boolean
+  readonly empty: boolean
   readonly filters: ArticlesFilters
 }

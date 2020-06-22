@@ -49,8 +49,13 @@ class DataTable extends Component<Props> {
               <td>{article.title}</td>
               <td>{article.description}</td>
               <td>
-                <a href={article.downloadUrl} title={article.downloadUrl}>
-                  {this.getUrlAlias(article.downloadUrl)}
+                <a
+                  href={article.downloadUrl}
+                  title={article.downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Visualizar
                 </a>
               </td>
               <td>
@@ -77,11 +82,6 @@ class DataTable extends Component<Props> {
         </tbody>
       </Table>
     )
-  }
-
-  getUrlAlias = (url: string) => {
-    const split = url.split('/')
-    return split[split.length - 1]
   }
 
   addFavorite = (id: string) => {
