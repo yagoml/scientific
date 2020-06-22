@@ -1,0 +1,13 @@
+.articles-data {
+  &__table {
+    table-layout: fixed;
+
+    td {
+      word-break: break-all;
+    }
+
+    .favorite {
+      cursor: pointer;
+    }
+  }
+}

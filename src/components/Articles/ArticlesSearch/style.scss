@@ -5,18 +5,6 @@
     padding: 15px 30px 20px 30px;
   }
 
-  &__table {
-    table-layout: fixed;
-
-    td {
-      word-break: break-all;
-    }
-
-    .favorite {
-      cursor: pointer;
-    }
-  }
-
   &__form {
     .form-control {
       height: $input-height;

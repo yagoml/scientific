@@ -7,11 +7,9 @@ import store from './store'
 import { Router, Route } from 'react-router-dom'
 import Favorites from './views/Favorites'
 import Container from 'react-bootstrap/Container'
-import { createBrowserHistory } from 'history'
 import Search from './views/Search'
 import AppHeader from './components/AppHeader'
-
-let history = createBrowserHistory()
+import history from './history'
 
 function App() {
   return (

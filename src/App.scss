@@ -11,15 +11,4 @@ body {
     margin: 15px 0;
     padding: 0 30px;
   }
-
-  .loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100px;
-
-    &__txt {
-      font-size: 20px;
-    }
-  }
 }

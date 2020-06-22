@@ -5,7 +5,7 @@ import { ApplicationState } from '../../../store/index'
 import { bindActionCreators, Dispatch } from 'redux'
 import * as FavoritesActions from '../../../store/ducks/favorites/actions'
 import { connect } from 'react-redux'
-import Spinner from 'react-bootstrap/Spinner'
+import Loader from '../../Loader'
 
 interface StateProps {
   articles: Article[]
@@ -31,16 +31,7 @@ class DataTable extends Component<Props> {
 
     return (
       <div className="favorites-table">
-        {loading && (
-          <div className="d-flex flex-column align-items-center justify-content-center loading">
-            <div className="loading__txt mb-2 text-primary">
-              Buscando artigos...
-            </div>
-            <Spinner animation="border" role="status" variant="primary">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-          </div>
-        )}
+        {loading && <Loader />}
         {total > 0 && !loading && (
           <Table hover className="articles__table">
             <thead>

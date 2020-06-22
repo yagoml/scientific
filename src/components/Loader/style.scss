@@ -1,0 +1,13 @@
+@import 'src/variables';
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+
+  &__txt {
+    color: $eletric-violet;
+    font-size: 20px;
+  }
+}

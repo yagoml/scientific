@@ -8,19 +8,18 @@ import {
 } from '../../../store/ducks/articles/types'
 import * as ArticlesActions from '../../../store/ducks/articles/actions'
 import * as FavoritesActions from '../../../store/ducks/favorites/actions'
-import Spinner from 'react-bootstrap/Spinner'
 import './style.scss'
 import queryString from 'query-string'
 import Pagination from '../../Pagination'
 import Filters from '../Filters'
-import { History, LocationState } from 'history'
 import DataTable from '../DataTable'
+import Loader from '../../Loader'
+import history from '../../../history'
 
 interface StateProps {
   total: number
   loading: boolean
   filters: ArticlesFilters
-  history?: History<LocationState>
 }
 
 interface DispatchProps {
@@ -39,17 +38,7 @@ class Articles extends Component<Props> {
         <div className="articles__header">
           <Filters apply={this.apply.bind(this)} />
         </div>
-
-        {loading && (
-          <div className="d-flex flex-column align-items-center justify-content-center loading">
-            <div className="loading__txt mb-2 text-primary">
-              Buscando artigos...
-            </div>
-            <Spinner animation="border" role="status" variant="primary">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-          </div>
-        )}
+        {loading && <Loader />}
         {total > 0 && !loading && (
           <>
             <div className="mb-3 articles__found">
@@ -110,8 +99,7 @@ class Articles extends Component<Props> {
   }
 
   updateUri = () => {
-    if (!this.props.history) return
-    this.props.history.push({
+    history.push({
       pathname: '/',
       search: this.buildQuery()
     })
