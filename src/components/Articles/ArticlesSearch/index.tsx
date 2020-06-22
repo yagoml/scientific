@@ -10,7 +10,7 @@ import * as ArticlesActions from '../../../store/ducks/articles/actions'
 import * as FavoritesActions from '../../../store/ducks/favorites/actions'
 import './style.scss'
 import queryString from 'query-string'
-import Pagination from '../../Pagination'
+import LargePagination from '../../LargePagination'
 import Filters from '../Filters'
 import DataTable from '../DataTable'
 import Loader from '../../Loader'
@@ -46,7 +46,7 @@ class Articles extends Component<Props> {
             </div>
             <DataTable />
             <div className="d-flex align-content-center justify-content-center">
-              <Pagination
+              <LargePagination
                 currentPage={this.getPage()}
                 totalRecords={total}
                 onPageChanged={(page: number) => this.onPageChanged(page)}

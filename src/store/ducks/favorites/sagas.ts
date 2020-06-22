@@ -1,7 +1,8 @@
 import {
   AddFavoriteAction,
   RemoveFavoriteAction,
-  FetchFavoritesAction
+  FetchFavoritesAction,
+  FavoritesTypes
 } from './types'
 import { call, put } from 'redux-saga/effects'
 import {

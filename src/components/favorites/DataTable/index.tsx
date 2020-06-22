@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import Loader from '../../Loader'
 import history from '../../../history'
 import queryString from 'query-string'
+import { Trash } from 'react-bootstrap-icons'
 
 interface StateProps {
   articles: Article[]
@@ -57,7 +58,7 @@ class DataTable extends Component<Props, OwnState> {
                   <th>Título</th>
                   <th>Descrição</th>
                   <th>URL</th>
-                  <th>Favorito</th>
+                  <th>Remover</th>
                 </tr>
               </thead>
               <tbody>
@@ -68,7 +69,11 @@ class DataTable extends Component<Props, OwnState> {
                     <td>{article.title}</td>
                     <td>{article.description}</td>
                     <td>
-                      <a href={article.downloadUrl} title={article.downloadUrl}>
+                      <a
+                        href={article.downloadUrl}
+                        title={article.downloadUrl}
+                        target="_blank"
+                      >
                         {this.getUrlAlias(article.downloadUrl)}
                       </a>
                     </td>
@@ -78,7 +83,7 @@ class DataTable extends Component<Props, OwnState> {
                         title="Remover dos favoritos"
                         onClick={() => this.removeFavorite(article.id)}
                       >
-                        Remover
+                        <Trash size={24} />
                       </button>
                     </td>
                   </tr>
@@ -100,8 +105,24 @@ class DataTable extends Component<Props, OwnState> {
   }
 
   removeFavorite = (id: string) => {
-    const { removeFavorite } = this.props
+    const { removeFavorite, articles } = this.props
+    const article = articles.find(a => a.id === id)
+    const remove = window.confirm(
+      'Remover "' + article?.title + '" dos favoritos?'
+    )
+    if (!remove) return
     removeFavorite(id)
+    this.checkPage()
+  }
+
+  /**
+   * Check page on favorite exclusion.
+   */
+  checkPage = () => {
+    const { fetchFavorites, articles } = this.props
+    let page = this.state.page
+    if (articles.length === 1 && page > 1) return this.togglePage()
+    fetchFavorites(page)
   }
 
   getQueryPage = () => {

@@ -31,7 +31,7 @@ const range = (from: number, to: number, step = 1) => {
   return range
 }
 
-class Pagination extends Component<PaginationProps, LocalState> {
+class LargePagination extends Component<PaginationProps, LocalState> {
   private pageLimit: number
   private totalRecords: number
   private pageNeighbours: number
@@ -215,4 +215,4 @@ class Pagination extends Component<PaginationProps, LocalState> {
   }
 }
 
-export default Pagination
+export default LargePagination
