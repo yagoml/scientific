@@ -6,7 +6,7 @@ const getItems = (page?: number) => {
   if (!items) return []
   if (!page) return JSON.parse(items)
   const startIndex = PER_PAGE * (page - 1)
-  return JSON.parse(items).splice(startIndex, PER_PAGE)
+  return JSON.parse(items).reverse().splice(startIndex, PER_PAGE)
 }
 
 export default {

@@ -23,7 +23,7 @@ body {
     vertical-align: middle !important;
     cursor: pointer;
     word-break: break-all;
-    max-width: 400px;
+    max-width: 500px;
   }
 
   .form-control,
@@ -33,6 +33,15 @@ body {
     &:focus {
       box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
     }
+  }
+
+  .table-description-wrapper {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-height: 114px;
+    max-width: 470px;
   }
 
   .page-item {
@@ -72,6 +81,14 @@ body {
     &:focus {
       box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
     }
+  }
+
+  .col-small {
+    width: 100px;
+  }
+
+  .col-med {
+    width: 250px;
   }
 
   .px30 {

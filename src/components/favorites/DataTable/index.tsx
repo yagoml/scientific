@@ -10,6 +10,7 @@ import Loader from '../../Loader'
 import history from '../../../history'
 import queryString from 'query-string'
 import { Trash } from 'react-bootstrap-icons'
+import TableHead from '../../articles/TableHead'
 
 interface StateProps {
   articles: Article[]
@@ -51,16 +52,7 @@ class DataTable extends Component<Props, OwnState> {
         {total > 0 && !loading && (
           <>
             <Table hover>
-              <thead>
-                <tr>
-                  <th>Autores</th>
-                  <th>Tipo</th>
-                  <th>Título</th>
-                  <th>Descrição</th>
-                  <th>URL</th>
-                  <th>Remover</th>
-                </tr>
-              </thead>
+              <TableHead />
               <tbody>
                 {articles.map((article: Article) => (
                   <tr
@@ -71,7 +63,11 @@ class DataTable extends Component<Props, OwnState> {
                     <td>{article.authors}</td>
                     <td>{article.types}</td>
                     <td>{article.title}</td>
-                    <td>{article.description}</td>
+                    <td>
+                      <div className="table-description-wrapper">
+                        {article.description}
+                      </div>
+                    </td>
                     <td>
                       <a
                         href={article.downloadUrl}
@@ -80,7 +76,7 @@ class DataTable extends Component<Props, OwnState> {
                         rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
                       >
-                        Visualizar
+                        Visualizar PDF
                       </a>
                     </td>
                     <td>

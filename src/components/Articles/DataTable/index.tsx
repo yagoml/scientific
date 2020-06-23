@@ -8,6 +8,7 @@ import * as FavoritesActions from '../../../store/ducks/favorites/actions'
 import { connect } from 'react-redux'
 import history from '../../../history'
 import './style.scss'
+import TableHead from '../TableHead'
 
 interface StateProps {
   articles: Article[]
@@ -33,16 +34,7 @@ class DataTable extends Component<Props> {
 
     return (
       <Table hover className="articles-data">
-        <thead>
-          <tr>
-            <th>Autores</th>
-            <th>Tipo</th>
-            <th>Título</th>
-            <th>Descrição</th>
-            <th>URL</th>
-            <th>Favorito</th>
-          </tr>
-        </thead>
+        <TableHead />
         <tbody>
           {articles.map(article => (
             <tr
@@ -53,7 +45,11 @@ class DataTable extends Component<Props> {
               <td>{article.authors}</td>
               <td>{article.types}</td>
               <td>{article.title}</td>
-              <td>{article.description}</td>
+              <td>
+                <div className="table-description-wrapper">
+                  {article.description}
+                </div>
+              </td>
               <td>
                 <a
                   href={article.downloadUrl}
@@ -62,7 +58,7 @@ class DataTable extends Component<Props> {
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
                 >
-                  Visualizar
+                  Visualizar PDF
                 </a>
               </td>
               <td>

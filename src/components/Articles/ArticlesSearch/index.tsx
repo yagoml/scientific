@@ -66,12 +66,11 @@ class Articles extends Component<Props> {
   }
 
   apply = () => {
-    this.search()
-
     history.push({
       pathname: '/',
       search: UriQuery.buildUriQuery(this.props.filters)
     })
+    this.search()
   }
 
   search = () => {

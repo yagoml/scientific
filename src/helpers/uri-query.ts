@@ -16,9 +16,11 @@ export const getPage = () => {
 
 export const buildUriQuery = (filters: ArticlesFilters) => {
   const params: ArticlesFilters = {}
-  if (filters.terms?.length) params.terms = filters.terms
-  if (filters.startYear) params.startYear = filters.startYear
-  if (filters.finishYear) params.finishYear = filters.finishYear
+  const { terms, startYear, finishYear, page } = filters
+  if (terms?.length) params.terms = terms
+  if (startYear) params.startYear = startYear
+  if (finishYear) params.finishYear = finishYear
+  if (page && page > 1) params.page = page
   return queryString.stringify(params)
 }
 
