@@ -79,6 +79,7 @@ class DataTable extends Component<Props, OwnState> {
                         title={article.downloadUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
                       >
                         Visualizar
                       </a>
@@ -87,7 +88,7 @@ class DataTable extends Component<Props, OwnState> {
                       <button
                         className="btn favorite--filled"
                         title="Remover dos favoritos"
-                        onClick={() => this.removeFavorite(article.id)}
+                        onClick={e => this.removeFavorite(article.id, e)}
                       >
                         <Trash color="#9a00f1" size={24} />
                       </button>
@@ -113,7 +114,11 @@ class DataTable extends Component<Props, OwnState> {
     )
   }
 
-  removeFavorite = (id: string) => {
+  removeFavorite = (
+    id: string,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation()
     const { removeFavorite, articles } = this.props
     const article = articles.find(a => a.id === id)
     const remove = window.confirm(

@@ -48,7 +48,7 @@ class DataTable extends Component<Props> {
             <tr
               key={article.id}
               title="Clique para ver detalhes"
-              onClick={() => this.articleDetails(article.id)}
+              onClick={event => this.articleDetails(article.id)}
             >
               <td>{article.authors}</td>
               <td>{article.types}</td>
@@ -60,6 +60,7 @@ class DataTable extends Component<Props> {
                   title={article.downloadUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
                 >
                   Visualizar
                 </a>
@@ -69,7 +70,7 @@ class DataTable extends Component<Props> {
                   <button
                     className="btn favorite"
                     title="Adicionar aos favoritos"
-                    onClick={() => this.addFavorite(article.id)}
+                    onClick={e => this.addFavorite(article.id, e)}
                   >
                     <Star color="#9a00f1" size={24} />
                   </button>
@@ -77,7 +78,7 @@ class DataTable extends Component<Props> {
                   <button
                     className="btn favorite--filled"
                     title="Remover dos favoritos"
-                    onClick={() => this.removeFavorite(article.id)}
+                    onClick={e => this.removeFavorite(article.id, e)}
                   >
                     <StarFill color="#9a00f1" size={24} className="favorite" />
                   </button>
@@ -90,12 +91,20 @@ class DataTable extends Component<Props> {
     )
   }
 
-  addFavorite = (id: string) => {
+  addFavorite = (
+    id: string,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation()
     const { addFavorite } = this.props
     addFavorite(id)
   }
 
-  removeFavorite = (id: string) => {
+  removeFavorite = (
+    id: string,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation()
     const { removeFavorite } = this.props
     removeFavorite(id)
   }
