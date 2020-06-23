@@ -5,7 +5,7 @@ import history from '../../../history'
 export default class BackLink extends Component {
   render() {
     return (
-      <Button variant="link" onClick={history.goBack} className="ml-5">
+      <Button variant="link" onClick={history.goBack}>
         Voltar
       </Button>
     )

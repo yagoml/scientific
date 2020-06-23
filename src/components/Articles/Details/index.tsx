@@ -5,6 +5,7 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { Article } from '../../../store/ducks/articles/types'
 import Loader from '../../../components/Loader'
 import './style.scss'
+import BackLink from './../../common/BackLink'
 
 interface RouteParam {
   id: string
@@ -75,10 +76,11 @@ class Details extends Component<Props, LocalState> {
               href={article.downloadUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-primary"
+              className="btn btn-primary mr-4"
             >
               Acessar documento
             </a>
+            <BackLink />
           </div>
         )}
       </div>

@@ -9,7 +9,7 @@ export default class Favorites extends Component {
     return (
       <div className="favorites">
         <div className="d-flex align-items-center">
-          <h1 className="mb-4">{this.pageTitle}</h1>
+          <h1 className="mb-4 mr-5">{this.pageTitle}</h1>
           <BackLink />
         </div>
         <DataTable />
