@@ -26,6 +26,7 @@ type Props = StateProps & DispatchProps
 class DataTable extends Component<Props> {
   componentDidMount() {
     const { fetchFavoritesIDs } = this.props
+    // Get favorite items IDs
     fetchFavoritesIDs()
   }
 
@@ -87,6 +88,11 @@ class DataTable extends Component<Props> {
     )
   }
 
+  /**
+   * Save article as favorite
+   * @param id Article ID
+   * @param e Click event
+   */
   addFavorite = (
     id: string,
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -96,6 +102,11 @@ class DataTable extends Component<Props> {
     addFavorite(id)
   }
 
+  /**
+   * Remove article from favorites
+   * @param id Article ID
+   * @param e Click event
+   */
   removeFavorite = (
     id: string,
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -105,6 +116,10 @@ class DataTable extends Component<Props> {
     removeFavorite(id)
   }
 
+  /**
+   * Go to article details page
+   * @param id Article ID
+   */
   articleDetails = (id: string) => {
     history.push({
       pathname: '/details/' + id

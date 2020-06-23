@@ -1,17 +1,13 @@
 import { AxiosRequestConfig } from 'axios'
 import { ArticlesFilters } from '../store/ducks/articles/types'
 
-/**
- * Core API key
- */
+// Core API service
+
 const apiKey = 'Hu1ApJ4YcW9POS5LjzZqXa6tlsMFKrGn'
-/**
- * Core API url
- */
 const apiUrl = 'https://core.ac.uk:443/api-v2/articles/'
 
 /**
- * Get config for `axios` request in Core API.
+ * Get config for `axios` request in Core API
  * @param params Request data
  */
 export const requestConfig = (params: any): AxiosRequestConfig => {
@@ -23,6 +19,10 @@ export const requestConfig = (params: any): AxiosRequestConfig => {
   return { ...config, ...params }
 }
 
+/**
+ * Build Core api search query
+ * @param filters Article filters
+ */
 export const buildSearchQuery = (filters: ArticlesFilters) => {
   const { terms, startYear, finishYear } = filters
   let query = ''

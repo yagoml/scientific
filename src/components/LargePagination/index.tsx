@@ -60,6 +60,77 @@ class LargePagination extends Component<PaginationProps, LocalState> {
     this.state = { currentPage: currentPage }
   }
 
+  render() {
+    if (!this.totalRecords || this.totalPages === 1) return null
+
+    const { currentPage } = this.state
+    const pages = this.fetchPageNumbers()
+
+    return (
+      <Fragment>
+        <nav aria-label="Countries Pagination">
+          <ul className="pagination">
+            {pages.map((page, index) => {
+              if (page === LEFT_PAGE)
+                return (
+                  <li key={index} className="page-item">
+                    <div
+                      className="page-link"
+                      aria-label="Previous"
+                      onClick={this.handleMoveLeft}
+                    >
+                      <span aria-hidden="true">&laquo;</span>
+                      <span className="sr-only">Previous</span>
+                    </div>
+                  </li>
+                )
+
+              if (page === RIGHT_PAGE)
+                return (
+                  <li key={index} className="page-item">
+                    <div
+                      className="page-link"
+                      aria-label="Next"
+                      onClick={this.handleMoveRight}
+                    >
+                      <span aria-hidden="true">&raquo;</span>
+                      <span className="sr-only">Next</span>
+                    </div>
+                  </li>
+                )
+
+              return (
+                <li
+                  key={index}
+                  className={`page-item${
+                    currentPage === page ? ' active' : ''
+                  }`}
+                >
+                  <div
+                    className="page-link"
+                    onClick={this.handleClick(page.toString())}
+                  >
+                    {page}
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
+      </Fragment>
+    )
+  }
+
+  /**
+   * Go to page N
+   * @param page Page
+   */
+  gotoPage = (page: number) => {
+    const { onPageChanged = (f: Function) => f } = this.props
+    const currentPage = Math.max(0, Math.min(page, this.totalPages))
+    this.setState({ currentPage }, () => onPageChanged(currentPage))
+  }
+
   /**
    * Let's say we have 10 pages and we set pageNeighbours to 2
    * Given that the current page is 6
@@ -127,85 +198,28 @@ class LargePagination extends Component<PaginationProps, LocalState> {
     return range(1, totalPages)
   }
 
-  render() {
-    if (!this.totalRecords || this.totalPages === 1) return null
-
-    const { currentPage } = this.state
-    const pages = this.fetchPageNumbers()
-
-    return (
-      <Fragment>
-        <nav aria-label="Countries Pagination">
-          <ul className="pagination">
-            {pages.map((page, index) => {
-              if (page === LEFT_PAGE)
-                return (
-                  <li key={index} className="page-item">
-                    <div
-                      className="page-link"
-                      aria-label="Previous"
-                      onClick={this.handleMoveLeft}
-                    >
-                      <span aria-hidden="true">&laquo;</span>
-                      <span className="sr-only">Previous</span>
-                    </div>
-                  </li>
-                )
-
-              if (page === RIGHT_PAGE)
-                return (
-                  <li key={index} className="page-item">
-                    <div
-                      className="page-link"
-                      aria-label="Next"
-                      onClick={this.handleMoveRight}
-                    >
-                      <span aria-hidden="true">&raquo;</span>
-                      <span className="sr-only">Next</span>
-                    </div>
-                  </li>
-                )
-
-              return (
-                <li
-                  key={index}
-                  className={`page-item${
-                    currentPage === page ? ' active' : ''
-                  }`}
-                >
-                  <div
-                    className="page-link"
-                    onClick={this.handleClick(page.toString())}
-                  >
-                    {page}
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </nav>
-      </Fragment>
-    )
-  }
-
-  gotoPage = (page: number) => {
-    const { onPageChanged = (f: Function) => f } = this.props
-
-    const currentPage = Math.max(0, Math.min(page, this.totalPages))
-
-    this.setState({ currentPage }, () => onPageChanged(currentPage))
-  }
-
+  /**
+   * Handle page click
+   * @param page Page clicked
+   */
   handleClick = (page: string) => (evt: React.FormEvent) => {
     evt.preventDefault()
     this.gotoPage(parseInt(page))
   }
 
+  /**
+   * Pages slide to left
+   * @param evt Click event
+   */
   handleMoveLeft = (evt: React.FormEvent) => {
     evt.preventDefault()
     this.gotoPage(this.state.currentPage - this.pageNeighbours * 2 - 1)
   }
 
+  /**
+   * Pages slide to right
+   * @param evt Click event
+   */
   handleMoveRight = (evt: React.FormEvent) => {
     evt.preventDefault()
     this.gotoPage(this.state.currentPage + this.pageNeighbours * 2 + 1)

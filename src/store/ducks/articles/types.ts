@@ -22,7 +22,6 @@ export interface FetchArticlesAction {
 /**
  * Data types
  */
-
 export interface Article {
   id: string
   title: string

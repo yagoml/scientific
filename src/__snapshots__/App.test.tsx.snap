@@ -38,7 +38,7 @@ exports[`Test App components render 1`] = `
           }
         }
       >
-        <index>
+        <AppHeader>
           <div
             className="d-flex align-items-center app-header"
           >
@@ -83,7 +83,7 @@ exports[`Test App components render 1`] = `
               </LinkAnchor>
             </Link>
           </div>
-        </index>
+        </AppHeader>
         <Container
           fluid={true}
         >

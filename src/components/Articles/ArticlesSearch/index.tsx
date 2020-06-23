@@ -49,7 +49,7 @@ class Articles extends Component<Props> {
             <DataTable />
             <div className="d-flex align-content-center justify-content-center">
               <LargePagination
-                currentPage={UriQuery.getPage()}
+                currentPage={UriQuery.getQueryPage()}
                 totalRecords={total}
                 onPageChanged={(page: number) => this.onPageChanged(page)}
               />
@@ -65,6 +65,9 @@ class Articles extends Component<Props> {
     )
   }
 
+  /**
+   * Apply filters
+   */
   apply = () => {
     history.push({
       pathname: '/',
@@ -73,16 +76,23 @@ class Articles extends Component<Props> {
     this.search()
   }
 
+  /**
+   * Fetch articles search
+   */
   search = () => {
     const { fetchArticles, filters } = this.props
     let searchQuery = buildSearchQuery(filters)
     if (!searchQuery.length) return
     fetchArticles({
       query: searchQuery,
-      page: UriQuery.getPage()
+      page: UriQuery.getQueryPage()
     })
   }
 
+  /**
+   * Pagination handler
+   * @param page new page
+   */
   onPageChanged = async (page: number) => {
     await this.props.setFilters({ ...this.props.filters, ...{ page: page } })
     this.apply()

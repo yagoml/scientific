@@ -11,7 +11,7 @@ import {
 } from './actions'
 import { requestConfig } from '../../../services/core'
 import axios from 'axios'
-import FavoritesService from '../../../services/favorites'
+import * as FavoritesService from '../../../services/favorites'
 
 /**
  * Request: Search for articles
@@ -45,6 +45,9 @@ export function* fetchFavorites({ payload }: FetchFavoritesAction) {
   }
 }
 
+/**
+ * Fetch favorite articles IDs
+ */
 export function* fetchFavoritesIDs() {
   try {
     yield put(favoritesIDsSuccess(FavoritesService.getItems()))
@@ -70,6 +73,10 @@ export function* addFavorite({ payload }: AddFavoriteAction) {
   }
 }
 
+/**
+ * Remove article from favorites
+ * @param payload Article ID
+ */
 export function* removeFavorite({ payload }: RemoveFavoriteAction) {
   try {
     const lsItems = FavoritesService.getItems()

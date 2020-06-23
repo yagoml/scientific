@@ -35,7 +35,7 @@ class Filters extends Component<Props, ArticlesFilters> {
     const query = UriQuery.getQuery()
     const initState: ArticlesFilters = {
       terms: query.terms ? query.terms.toString() : '',
-      page: UriQuery.getPage()
+      page: UriQuery.getQueryPage()
     }
     this.years = this.buildYears()
 
@@ -48,9 +48,7 @@ class Filters extends Component<Props, ArticlesFilters> {
   }
 
   componentDidMount() {
-    if (this.props.total > 0) return
-    const { terms, startYear, finishYear } = this.state
-    if ((terms && terms.length) || startYear || finishYear) this.applyFilters()
+    this.checkFilters()
   }
 
   render() {
@@ -63,7 +61,7 @@ class Filters extends Component<Props, ArticlesFilters> {
               type="text"
               placeholder="Palavra(s) chave"
               value={this.state.terms}
-              onChange={this.handleChange}
+              onChange={this.handleTerms}
               style={{ padding: '6px 55px 6px 12px' }}
             />
             <Form.Text className="text-muted">
@@ -136,10 +134,18 @@ class Filters extends Component<Props, ArticlesFilters> {
     )
   }
 
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  /**
+   * Handle terms change
+   * @param event Change event
+   */
+  handleTerms = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ terms: event.target.value })
   }
 
+  /**
+   * Apply current filters
+   * @param event Form event
+   */
   applyFilters = async (event?: React.FormEvent) => {
     if (event) event.preventDefault()
     const valid = this.checkYears()
@@ -148,18 +154,28 @@ class Filters extends Component<Props, ArticlesFilters> {
     this.props.apply()
   }
 
+  /**
+   * Start and finish years validation.
+   */
   checkYears() {
     const { startYear, finishYear } = this.state
     if (!startYear || !finishYear) return true
     return finishYear >= startYear
   }
 
+  /**
+   * Year select handler
+   * @param event Change event
+   */
   yearSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
     const year = parseInt(event.target.value)
     const key = event.target.name
     this.setState({ [key]: year ? year : undefined })
   }
 
+  /**
+   * Build selects years
+   */
   buildYears = () => {
     let years = []
     const currentYear = new Date().getFullYear()
@@ -167,6 +183,9 @@ class Filters extends Component<Props, ArticlesFilters> {
     return years
   }
 
+  /**
+   * Check if has filters applied
+   */
   hasFilter = (): boolean => {
     const { terms, startYear, finishYear } = this.state
     const hasTerms = terms !== undefined && terms.length > 0
@@ -175,6 +194,17 @@ class Filters extends Component<Props, ArticlesFilters> {
     return hasTerms || hasStartYear || hasFinishYear
   }
 
+  /**
+   * Check if has filters to apply
+   */
+  checkFilters = () => {
+    if (this.props.total > 0) return
+    if (this.hasFilter()) this.applyFilters()
+  }
+
+  /**
+   * Reset filters
+   */
   resetFilters = () => {
     const { cleanFilters } = this.props
     this.setState({

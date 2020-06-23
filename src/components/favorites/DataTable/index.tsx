@@ -11,6 +11,7 @@ import history from '../../../history'
 import queryString from 'query-string'
 import { Trash } from 'react-bootstrap-icons'
 import TableHead from '../../articles/TableHead'
+import { getQueryPage } from '../../../helpers/uri-query'
 
 interface StateProps {
   articles: Article[]
@@ -34,12 +35,13 @@ class DataTable extends Component<Props, OwnState> {
 
   constructor(props: Props) {
     super(props)
-    let page = this.getQueryPage()
+    let page = getQueryPage()
     this.state = { page: page }
   }
 
   componentDidMount() {
     const { fetchFavorites } = this.props
+    // Fetch favorite articles list
     fetchFavorites(this.state.page)
   }
 
@@ -104,6 +106,11 @@ class DataTable extends Component<Props, OwnState> {
     )
   }
 
+  /**
+   * Remove article from favorites
+   * @param id Article ID
+   * @param e Click event
+   */
   removeFavorite = (
     id: string,
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -129,16 +136,9 @@ class DataTable extends Component<Props, OwnState> {
     fetchFavorites(page)
   }
 
-  getQueryPage = () => {
-    const query = queryString.parse(window.location.search)
-    let page = 1
-    if (query.page) {
-      page = parseInt(query.page.toString())
-      if (!page) page = 1
-    }
-    return page
-  }
-
+  /**
+   * Build pagination items
+   */
   paginationItems = () => {
     let items = []
     const { page } = this.state
@@ -156,6 +156,10 @@ class DataTable extends Component<Props, OwnState> {
     return items
   }
 
+  /**
+   * Set new page
+   * @param page Page
+   */
   setPage = async (page: number) => {
     if (page === this.state.page) return
     await this.setState({ page: page })
@@ -164,6 +168,10 @@ class DataTable extends Component<Props, OwnState> {
     this.updateUri()
   }
 
+  /**
+   * Toggle to next/prev page
+   * @param next Go next? Otherwise go to prev
+   */
   togglePage = (next?: boolean) => {
     const total = this.getTotalPages()
     if (next) {
@@ -175,6 +183,9 @@ class DataTable extends Component<Props, OwnState> {
     }
   }
 
+  /**
+   * Update page uri
+   */
   updateUri = () => {
     history.push({
       pathname: '/favorites',
@@ -182,12 +193,19 @@ class DataTable extends Component<Props, OwnState> {
     })
   }
 
+  /**
+   * Go to article details
+   * @param id Article ID
+   */
   articleDetails = (id: string) => {
     history.push({
       pathname: '/details/' + id
     })
   }
 
+  /**
+   * Pagination builder
+   */
   pagination = () => {
     const totalPages = this.getTotalPages()
     return (
@@ -213,6 +231,9 @@ class DataTable extends Component<Props, OwnState> {
     )
   }
 
+  /**
+   * Calculate total of pages
+   */
   getTotalPages = () => {
     return Math.ceil(this.props.total / this.perPage)
   }

@@ -11,14 +11,14 @@ interface RouteParam {
   id: string
 }
 
-interface LocalState {
+interface DetailsState {
   loading: boolean
   article?: Article
 }
 
 type Props = RouteComponentProps<RouteParam>
 
-class Details extends Component<Props, LocalState> {
+class Details extends Component<Props, DetailsState> {
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -27,7 +27,7 @@ class Details extends Component<Props, LocalState> {
   }
 
   componentDidMount() {
-    this.getArticleDetail()
+    this.getArticleDetails()
   }
 
   render() {
@@ -64,8 +64,7 @@ class Details extends Component<Props, LocalState> {
               <span>Ano:</span> <strong>{article.year}</strong>
             </p>
             <p>
-              <span>Publicado em:</span>{' '}
-              <strong>{this.getDate()?.toLocaleDateString()}</strong>
+              <span>Publicado em:</span> <strong>{this.getDate()}</strong>
             </p>
             {article.language !== undefined && (
               <p>
@@ -87,7 +86,10 @@ class Details extends Component<Props, LocalState> {
     )
   }
 
-  getArticleDetail = () => {
+  /**
+   * Get article details on Core api.
+   */
+  getArticleDetails = () => {
     this.setState({ loading: true })
     const articleID = this.props.match.params.id
     const config = requestConfig({
@@ -104,12 +106,15 @@ class Details extends Component<Props, LocalState> {
       })
   }
 
+  /**
+   * Get article publication date (locale)
+   */
   getDate = () => {
     const { article } = this.state
     if (!article || !article.datePublished) return
     const dateStr: Date = article.datePublished
     const date = new Date(dateStr)
-    return date
+    return date.toLocaleDateString()
   }
 }
 
