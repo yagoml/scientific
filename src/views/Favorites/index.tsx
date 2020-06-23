@@ -1,19 +1,19 @@
-import React, { Component } from 'react'
+import React from 'react'
 import DataTable from '../../components/favorites/DataTable'
 import BackLink from '../../components/common/BackLink'
 
-export default class Favorites extends Component {
-  private pageTitle: string = 'Artigos favoritos'
+const pageTitle = 'Artigos favoritos'
 
-  render() {
-    return (
-      <div className="favorites">
-        <div className="d-flex align-items-center">
-          <h1 className="mb-4 mr-5">{this.pageTitle}</h1>
-          <BackLink />
-        </div>
-        <DataTable />
+const Favorites = () => {
+  return (
+    <div className="favorites">
+      <div className="d-flex align-items-center">
+        <h1 className="mb-4 mr-5">{pageTitle}</h1>
+        <BackLink />
       </div>
-    )
-  }
+      <DataTable />
+    </div>
+  )
 }
+
+export default Favorites
