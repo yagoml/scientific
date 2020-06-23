@@ -72,15 +72,15 @@ class Details extends Component<Props, LocalState> {
                 <span>Idioma:</span> <strong>{article.language?.name}</strong>
               </p>
             )}
+            <BackLink variant="secondary" />
             <a
               href={article.downloadUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-primary mr-4"
+              className="btn btn-primary ml-3"
             >
               Acessar documento
             </a>
-            <BackLink />
           </div>
         )}
       </div>

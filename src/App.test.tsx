@@ -1,9 +1,9 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
+import React from 'react'
+import App from './App'
+import { mount } from 'enzyme'
+import toJson from 'enzyme-to-json'
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+test('Test App components render', () => {
+  const app = mount(<App />)
+  expect(toJson(app)).toMatchSnapshot()
+})

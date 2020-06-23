@@ -1,13 +1,20 @@
 import React, { Component } from 'react'
 import Button from 'react-bootstrap/Button'
 import history from '../../../history'
+import PropTypes from 'prop-types'
 
-export default class BackLink extends Component {
-  render() {
-    return (
-      <Button variant="link" onClick={history.goBack}>
-        Voltar
-      </Button>
-    )
-  }
+interface PropTypes {
+  variant: any
 }
+
+const BackLink = ({ variant = 'link' }: PropTypes) => (
+  <Button variant={variant} onClick={history.goBack}>
+    Voltar
+  </Button>
+)
+
+BackLink.propTypes = {
+  variant: PropTypes.string
+}
+
+export default BackLink
