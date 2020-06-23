@@ -8,8 +8,8 @@ import {
 } from '../../../store/ducks/articles/types'
 import * as ArticlesActions from '../../../store/ducks/articles/actions'
 import * as FavoritesActions from '../../../store/ducks/favorites/actions'
+import * as UriQuery from '../../../helpers/uri-query'
 import './style.scss'
-import queryString from 'query-string'
 import LargePagination from '../../LargePagination'
 import Filters from '../Filters'
 import DataTable from '../DataTable'
@@ -49,7 +49,7 @@ class Articles extends Component<Props> {
             <DataTable />
             <div className="d-flex align-content-center justify-content-center">
               <LargePagination
-                currentPage={this.getPage()}
+                currentPage={UriQuery.getPage()}
                 totalRecords={total}
                 onPageChanged={(page: number) => this.onPageChanged(page)}
               />
@@ -67,15 +67,11 @@ class Articles extends Component<Props> {
 
   apply = () => {
     this.search()
+
     history.push({
       pathname: '/',
-      search: queryString.stringify(this.props.filters)
+      search: UriQuery.buildUriQuery(this.props.filters)
     })
-  }
-
-  getPage = () => {
-    const query = this.getQuery()
-    return query.page ? parseInt(query.page.toString()) : 1
   }
 
   search = () => {
@@ -84,16 +80,8 @@ class Articles extends Component<Props> {
     if (!searchQuery.length) return
     fetchArticles({
       query: searchQuery,
-      page: this.getPage()
+      page: UriQuery.getPage()
     })
-  }
-
-  queryToInt = (queryString: string | string[]) => {
-    return parseInt(queryString.toString())
-  }
-
-  getQuery = () => {
-    return queryString.parse(window.location.search)
   }
 
   onPageChanged = async (page: number) => {

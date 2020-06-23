@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { Search } from 'react-bootstrap-icons'
-import queryString from 'query-string'
 import { ArticlesFilters } from '../../../store/ducks/articles/types'
 import { Action, Dispatch, bindActionCreators } from 'redux'
 import { ApplicationState } from '../../../store/index'
@@ -10,6 +9,7 @@ import * as ArticlesActions from '../../../store/ducks/articles/actions'
 import { connect } from 'react-redux'
 import './style.scss'
 import history from '../../../history'
+import * as UriQuery from '../../../helpers/uri-query'
 
 interface StateProps {
   filters: ArticlesFilters
@@ -32,16 +32,17 @@ class Filters extends Component<Props, ArticlesFilters> {
 
   constructor(props: Props) {
     super(props)
-    const query = this.getQuery()
+    const query = UriQuery.getQuery()
     const initState: ArticlesFilters = {
       terms: query.terms ? query.terms.toString() : '',
-      page: this.getPage()
+      page: UriQuery.getPage()
     }
     this.years = this.buildYears()
 
-    if (query.startYear) initState.startYear = this.queryToInt(query.startYear)
+    if (query.startYear)
+      initState.startYear = UriQuery.queryToInt(query.startYear)
     if (query.finishYear)
-      initState.finishYear = this.queryToInt(query.finishYear)
+      initState.finishYear = UriQuery.queryToInt(query.finishYear)
 
     this.state = initState
   }
@@ -164,19 +165,6 @@ class Filters extends Component<Props, ArticlesFilters> {
     const currentYear = new Date().getFullYear()
     for (let i = currentYear; i >= 1800; i--) years.push(i)
     return years
-  }
-
-  queryToInt = (queryString: string | string[]) => {
-    return parseInt(queryString.toString())
-  }
-
-  getPage = () => {
-    const query = this.getQuery()
-    return query.page ? parseInt(query.page.toString()) : 1
-  }
-
-  getQuery = () => {
-    return queryString.parse(window.location.search)
   }
 
   hasFilter = (): boolean => {
