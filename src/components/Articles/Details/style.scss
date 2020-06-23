@@ -1,0 +1,17 @@
+@import 'src/variables';
+
+.article-details {
+  padding: 0 30px;
+
+  &__topic {
+    background-color: white;
+    border: 1px solid $eletric-violet;
+    color: $eletric-violet;
+    padding: 0 15px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+  }
+}

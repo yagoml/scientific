@@ -30,6 +30,17 @@ export interface Article {
   description: string
   types: string[]
   downloadUrl: string
+  datePublished?: Date
+  publisher?: string
+  language?: ArticleLanguage
+  year?: number
+  topics?: string[]
+}
+
+export interface ArticleLanguage {
+  code: string
+  id: number
+  name: string
 }
 
 export interface ArticlesData {

@@ -14,7 +14,7 @@ const searchableFields = ['title', 'authors', 'description']
  */
 export function* searchArticles({ payload }: FetchArticlesAction) {
   const apiCall = async () => {
-    const config = Core.getRequestConfig({
+    const config = Core.requestConfig({
       path: 'search',
       data: JSON.stringify([
         {

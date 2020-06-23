@@ -64,7 +64,11 @@ class DataTable extends Component<Props, OwnState> {
               </thead>
               <tbody>
                 {articles.map((article: Article) => (
-                  <tr key={article.id}>
+                  <tr
+                    key={article.id}
+                    title="Clique para ver detalhes"
+                    onClick={() => this.articleDetails(article.id)}
+                  >
                     <td>{article.authors}</td>
                     <td>{article.types}</td>
                     <td>{article.title}</td>
@@ -180,6 +184,12 @@ class DataTable extends Component<Props, OwnState> {
     history.push({
       pathname: '/favorites',
       search: queryString.stringify(this.state)
+    })
+  }
+
+  articleDetails = (id: string) => {
+    history.push({
+      pathname: '/details/' + id
     })
   }
 

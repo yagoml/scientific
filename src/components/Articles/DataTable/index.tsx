@@ -6,6 +6,8 @@ import { ApplicationState } from '../../../store/index'
 import { bindActionCreators, Dispatch } from 'redux'
 import * as FavoritesActions from '../../../store/ducks/favorites/actions'
 import { connect } from 'react-redux'
+import history from '../../../history'
+import './style.scss'
 
 interface StateProps {
   articles: Article[]
@@ -30,7 +32,7 @@ class DataTable extends Component<Props> {
     const { articles, favorites } = this.props
 
     return (
-      <Table hover className="articles__table">
+      <Table hover className="articles-data">
         <thead>
           <tr>
             <th>Autores</th>
@@ -43,7 +45,11 @@ class DataTable extends Component<Props> {
         </thead>
         <tbody>
           {articles.map(article => (
-            <tr key={article.id}>
+            <tr
+              key={article.id}
+              title="Clique para ver detalhes"
+              onClick={() => this.articleDetails(article.id)}
+            >
               <td>{article.authors}</td>
               <td>{article.types}</td>
               <td>{article.title}</td>
@@ -92,6 +98,12 @@ class DataTable extends Component<Props> {
   removeFavorite = (id: string) => {
     const { removeFavorite } = this.props
     removeFavorite(id)
+  }
+
+  articleDetails = (id: string) => {
+    history.push({
+      pathname: '/details/' + id
+    })
   }
 }
 

@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import store from './store'
 import { Router, Route } from 'react-router-dom'
 import Favorites from './views/Favorites'
+import ArticleDetails from './views/ArticleDetails'
 import Container from 'react-bootstrap/Container'
 import Search from './views/Search'
 import AppHeader from './components/AppHeader'
@@ -20,6 +21,7 @@ function App() {
           <Container fluid>
             <Route path="/" component={Search} exact />
             <Route path="/favorites" component={Favorites} />
+            <Route path="/details/:id" component={ArticleDetails} />
           </Container>
         </Provider>
       </Router>

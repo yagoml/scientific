@@ -14,11 +14,12 @@ export default {
    * Get config for `axios` request in Core API.
    * @param params Request data
    */
-  getRequestConfig(params: any): AxiosRequestConfig {
-    return {
+  requestConfig(params: any): AxiosRequestConfig {
+    const config: AxiosRequestConfig = {
       method: 'post',
-      url: `${apiUrl}${params.path}?apiKey=${apiKey}`,
-      data: params.data
+      url: `${apiUrl}${params.path}?apiKey=${apiKey}`
     }
+    delete params.path
+    return { ...config, ...params }
   }
 }

@@ -18,7 +18,7 @@ import FavoritesService from '../../../services/favorites'
  */
 export function* fetchFavorites({ payload }: FetchFavoritesAction) {
   const apiCall = async (pageIDs: string[]) => {
-    const config = Core.getRequestConfig({
+    const config = Core.requestConfig({
       path: 'get',
       data: JSON.stringify(pageIDs)
     })

@@ -15,8 +15,14 @@ body {
     text-shadow: $text-shadow;
   }
 
+  h2 {
+    font-size: 26px;
+  }
+
   td {
     vertical-align: middle !important;
+    cursor: pointer;
+    word-break: break-all;
   }
 
   .form-control,
@@ -48,9 +54,12 @@ body {
       background-color: $eletric-violet;
       border-color: $eletric-violet;
 
-      &:hover {
-        background-color: $eletric-violet;
-        color: $yellow;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: $eletric-violet !important;
+        border-color: $eletric-violet !important;
+        color: $yellow !important;
         box-shadow: 0 0 0 1px $yellow;
 
         svg {
