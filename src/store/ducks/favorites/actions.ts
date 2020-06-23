@@ -8,8 +8,8 @@ export const fetchFavoritesIDs = () =>
 export const favoritesIDsSuccess = (ids: string[]) =>
   action(FavoritesTypes.FAVORITES_IDS_SUCCESS, ids)
 
-export const fetchFavorites = (page: number) =>
-  action(FavoritesTypes.FETCH_FAVORITES, page)
+export const fetchFavorites = (page: number, silent?: boolean) =>
+  action(FavoritesTypes.FETCH_FAVORITES, { page: page, silent: silent })
 
 export const favoritesSuccess = (articles: ArticlesData) =>
   action(FavoritesTypes.FAVORITES_SUCCESS, articles)

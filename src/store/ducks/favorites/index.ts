@@ -12,7 +12,7 @@ const INITIAL_STATE: FavoritesState = {
 const reducer: Reducer<FavoritesState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case FavoritesTypes.FETCH_FAVORITES:
-      return { ...state, loading: true }
+      return { ...state, loading: !action.payload.silent }
     case FavoritesTypes.FAVORITES_IDS_SUCCESS:
       return { ...state, ids: action.payload }
     case FavoritesTypes.FAVORITES_SUCCESS:

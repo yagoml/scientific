@@ -52,7 +52,9 @@ export function* fetchFavoritesIDs() {
   try {
     yield put(favoritesIDsSuccess(FavoritesService.getItems()))
   } catch (e) {
-    return console.error(e)
+    return alert(
+      'Erro inesperado ao tentar carregar os dados. Por favor tente novamente.'
+    )
   }
 }
 
@@ -69,7 +71,9 @@ export function* addFavorite({ payload }: AddFavoriteAction) {
     }
     yield put(favoritesIDsSuccess(FavoritesService.getItems()))
   } catch (e) {
-    return console.error(e)
+    return alert(
+      'Erro inesperado ao tentar carregar os dados. Por favor tente novamente.'
+    )
   }
 }
 
@@ -89,6 +93,8 @@ export function* removeFavorite({ payload }: RemoveFavoriteAction) {
     }
     yield put(favoritesIDsSuccess(FavoritesService.getItems()))
   } catch (e) {
-    return console.error(e)
+    return alert(
+      'Erro inesperado ao tentar carregar os dados. Por favor tente novamente.'
+    )
   }
 }

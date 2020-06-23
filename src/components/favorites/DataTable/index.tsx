@@ -25,7 +25,7 @@ interface OwnState {
 
 interface DispatchProps {
   removeFavorite(id: string): void
-  fetchFavorites(page: number): void
+  fetchFavorites(page: number, silent?: boolean): void
 }
 
 type Props = StateProps & DispatchProps
@@ -133,7 +133,7 @@ class DataTable extends Component<Props, OwnState> {
     const { fetchFavorites, articles } = this.props
     let page = this.state.page
     if (articles.length === 1 && page > 1) return this.togglePage()
-    fetchFavorites(page)
+    fetchFavorites(page, true)
   }
 
   /**
