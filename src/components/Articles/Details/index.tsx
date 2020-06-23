@@ -71,16 +71,14 @@ class Details extends Component<Props, LocalState> {
                 <span>Idioma:</span> <strong>{article.language?.name}</strong>
               </p>
             )}
-            <p>
-              <a
-                href={article.downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-primary"
-              >
-                Acessar documento
-              </a>
-            </p>
+            <a
+              href={article.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary"
+            >
+              Acessar documento
+            </a>
           </div>
         )}
       </div>
