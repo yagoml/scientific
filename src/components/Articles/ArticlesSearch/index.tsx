@@ -15,6 +15,7 @@ import Filters from '../Filters'
 import DataTable from '../DataTable'
 import Loader from '../../Loader'
 import history from '../../../history'
+import { buildSearchQuery } from '../../../services/core'
 
 interface StateProps {
   total: number
@@ -65,8 +66,11 @@ class Articles extends Component<Props> {
   }
 
   apply = () => {
-    this.updateUri()
     this.search()
+    history.push({
+      pathname: '/',
+      search: queryString.stringify(this.props.filters)
+    })
   }
 
   getPage = () => {
@@ -75,14 +79,11 @@ class Articles extends Component<Props> {
   }
 
   search = () => {
-    const { fetchArticles } = this.props
-    const { terms, startYear, finishYear } = this.props.filters
-    let query = terms
-    if (startYear) query += ' AND year:>=' + startYear
-    if (finishYear) query += ' AND year:<=' + finishYear
-    if (!query) return
+    const { fetchArticles, filters } = this.props
+    let searchQuery = buildSearchQuery(filters)
+    if (!searchQuery.length) return
     fetchArticles({
-      query: query,
+      query: searchQuery,
       page: this.getPage()
     })
   }
@@ -98,13 +99,6 @@ class Articles extends Component<Props> {
   onPageChanged = async (page: number) => {
     await this.props.setFilters({ ...this.props.filters, ...{ page: page } })
     this.apply()
-  }
-
-  updateUri = () => {
-    history.push({
-      pathname: '/',
-      search: queryString.stringify(this.props.filters)
-    })
   }
 }
 

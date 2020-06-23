@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Core from '../../../services/core'
+import { requestConfig } from '../../../services/core'
 import axios from 'axios'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Article } from '../../../store/ducks/articles/types'
@@ -90,7 +90,7 @@ class Details extends Component<Props, LocalState> {
   getArticleDetail = () => {
     this.setState({ loading: true })
     const articleID = this.props.match.params.id
-    const config = Core.requestConfig({
+    const config = requestConfig({
       path: 'get/' + articleID,
       method: 'get'
     })

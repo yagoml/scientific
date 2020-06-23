@@ -9,7 +9,7 @@ import {
   favoritesSuccess,
   favoritesFailed
 } from './actions'
-import Core from '../../../services/core'
+import { requestConfig } from '../../../services/core'
 import axios from 'axios'
 import FavoritesService from '../../../services/favorites'
 
@@ -18,7 +18,7 @@ import FavoritesService from '../../../services/favorites'
  */
 export function* fetchFavorites({ payload }: FetchFavoritesAction) {
   const apiCall = async (pageIDs: string[]) => {
-    const config = Core.requestConfig({
+    const config = requestConfig({
       path: 'get',
       data: JSON.stringify(pageIDs)
     })

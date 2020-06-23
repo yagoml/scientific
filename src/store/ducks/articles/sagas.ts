@@ -2,7 +2,7 @@ import { articlesSuccess, articlesFailed } from './actions'
 import axios from 'axios'
 import { call, put } from 'redux-saga/effects'
 import { FetchArticlesAction } from './types'
-import Core from '../../../services/core'
+import { requestConfig } from '../../../services/core'
 
 /**
  * Fields to search terms on Core API
@@ -14,7 +14,7 @@ const searchableFields = ['title', 'authors', 'description']
  */
 export function* searchArticles({ payload }: FetchArticlesAction) {
   const apiCall = async () => {
-    const config = Core.requestConfig({
+    const config = requestConfig({
       path: 'search',
       data: JSON.stringify([
         {

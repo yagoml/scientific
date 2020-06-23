@@ -13,6 +13,7 @@ import history from '../../../history'
 
 interface StateProps {
   filters: ArticlesFilters
+  total: number
 }
 
 interface OwnProps {
@@ -46,6 +47,7 @@ class Filters extends Component<Props, ArticlesFilters> {
   }
 
   componentDidMount() {
+    if (this.props.total > 0) return
     const { terms, startYear, finishYear } = this.state
     if ((terms && terms.length) || startYear || finishYear) this.applyFilters()
   }
@@ -160,7 +162,7 @@ class Filters extends Component<Props, ArticlesFilters> {
   buildYears = () => {
     let years = []
     const currentYear = new Date().getFullYear()
-    for (let i = currentYear; i >= 1950; i--) years.push(i)
+    for (let i = currentYear; i >= 1800; i--) years.push(i)
     return years
   }
 
@@ -201,7 +203,8 @@ class Filters extends Component<Props, ArticlesFilters> {
 }
 
 const mapStateToProps = (state: ApplicationState): StateProps => ({
-  filters: state.articles.filters
+  filters: state.articles.filters,
+  total: state.articles.total
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
