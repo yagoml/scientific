@@ -10,7 +10,6 @@ import Loader from '../../Loader'
 import history from '../../../history'
 import queryString from 'query-string'
 import { Trash } from 'react-bootstrap-icons'
-import { Link } from 'react-router-dom'
 
 interface StateProps {
   articles: Article[]
@@ -30,7 +29,7 @@ interface DispatchProps {
 type Props = StateProps & DispatchProps
 
 class DataTable extends Component<Props, OwnState> {
-  private perPage: number = 4
+  private perPage: number = 7
 
   constructor(props: Props) {
     super(props)
@@ -103,12 +102,7 @@ class DataTable extends Component<Props, OwnState> {
           </>
         )}
         {total === 0 && !loading && (
-          <div className="px30">
-            Nenhum artigo favorito ainda. <br />
-            <Link to="/" className="btn btn-primary mt-3">
-              Voltar
-            </Link>
-          </div>
+          <div className="px30">Nenhum artigo favorito ainda.</div>
         )}
       </div>
     )
