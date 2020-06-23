@@ -5,7 +5,8 @@ export enum ArticlesTypes {
   FETCH_ARTICLES = '@articles/FETCH_ARTICLES',
   ARTICLES_SUCCESS = '@articles/ARTICLES_SUCCESS',
   ARTICLES_FAILURE = '@articles/ARTICLES_FAILURE',
-  SET_FILTERS = '@articles/SET_FILTERS'
+  SET_FILTERS = '@articles/SET_FILTERS',
+  CLEAN_FILTERS = '@articles/CLEAN_FILTERS'
 }
 
 export interface FetchArticlesPayload {

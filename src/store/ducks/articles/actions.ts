@@ -16,3 +16,5 @@ export const articlesFailed = () => action(ArticlesTypes.ARTICLES_FAILURE)
 
 export const setFilters = (filters: ArticlesFilters) =>
   action(ArticlesTypes.SET_FILTERS, filters)
+
+export const cleanFilters = () => action(ArticlesTypes.CLEAN_FILTERS)

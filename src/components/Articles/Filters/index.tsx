@@ -9,6 +9,7 @@ import { ApplicationState } from '../../../store/index'
 import * as ArticlesActions from '../../../store/ducks/articles/actions'
 import { connect } from 'react-redux'
 import './style.scss'
+import history from '../../../history'
 
 interface StateProps {
   filters: ArticlesFilters
@@ -20,11 +21,14 @@ interface OwnProps {
 
 interface DispathProps {
   setFilters(filters: ArticlesFilters): Action
+  cleanFilters(): Action
 }
 
 type Props = StateProps & DispathProps & OwnProps
 
 class Filters extends Component<Props, ArticlesFilters> {
+  private years: number[]
+
   constructor(props: Props) {
     super(props)
     const query = this.getQuery()
@@ -32,6 +36,7 @@ class Filters extends Component<Props, ArticlesFilters> {
       terms: query.terms ? query.terms.toString() : '',
       page: this.getPage()
     }
+    this.years = this.buildYears()
 
     if (query.startYear) initState.startYear = this.queryToInt(query.startYear)
     if (query.finishYear)
@@ -80,7 +85,7 @@ class Filters extends Component<Props, ArticlesFilters> {
               onChange={this.yearSelected.bind(this)}
             >
               <option></option>
-              {this.buildYears().map((year: number) => {
+              {this.years.map((year: number) => {
                 return (
                   <option value={year} key={year}>
                     {year}
@@ -100,7 +105,7 @@ class Filters extends Component<Props, ArticlesFilters> {
               onChange={this.yearSelected.bind(this)}
             >
               <option></option>
-              {this.buildYears().map((year: number) => {
+              {this.years.map((year: number) => {
                 return (
                   <option value={year} key={year}>
                     {year}
@@ -113,6 +118,16 @@ class Filters extends Component<Props, ArticlesFilters> {
           <Button variant="primary" type="submit" className="ml-3 mt-2">
             Aplicar
           </Button>
+          {this.hasFilter() && (
+            <Button
+              variant="secondary"
+              type="reset"
+              className="ml-3 mt-2"
+              onClick={() => this.resetFilters()}
+            >
+              Limpar filtros
+            </Button>
+          )}
         </div>
       </Form>
     )
@@ -124,8 +139,16 @@ class Filters extends Component<Props, ArticlesFilters> {
 
   applyFilters = async (event?: React.FormEvent) => {
     if (event) event.preventDefault()
+    const valid = this.checkYears()
+    if (!valid) return alert('Ano final não pode ser maior que o inicial')
     await this.props.setFilters(this.state)
     this.props.apply()
+  }
+
+  checkYears() {
+    const { startYear, finishYear } = this.state
+    if (!startYear || !finishYear) return true
+    return finishYear >= startYear
   }
 
   yearSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,6 +175,28 @@ class Filters extends Component<Props, ArticlesFilters> {
 
   getQuery = () => {
     return queryString.parse(window.location.search)
+  }
+
+  hasFilter = (): boolean => {
+    const { terms, startYear, finishYear } = this.state
+    const hasTerms = terms !== undefined && terms.length > 0
+    const hasStartYear = startYear !== undefined && startYear > 0
+    const hasFinishYear = finishYear !== undefined && finishYear > 0
+    return hasTerms || hasStartYear || hasFinishYear
+  }
+
+  resetFilters = () => {
+    const { cleanFilters } = this.props
+    this.setState({
+      terms: '',
+      page: 1,
+      startYear: 0,
+      finishYear: 0
+    })
+    cleanFilters()
+    history.push({
+      pathname: '/'
+    })
   }
 }
 
