@@ -213,6 +213,7 @@ class DataTable extends Component<Props, OwnState> {
    */
   pagination = () => {
     const totalPages = this.getTotalPages()
+    if (totalPages === 1) return
     return (
       <Pagination>
         <Pagination.First
