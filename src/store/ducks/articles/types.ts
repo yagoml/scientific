@@ -26,10 +26,10 @@ export interface Article {
   id: string
   title: string
   authors: string[]
-  description: string
+  description?: string
   types: string[]
   downloadUrl: string
-  datePublished?: Date
+  datePublished?: string
   publisher?: string
   language?: ArticleLanguage
   year?: number

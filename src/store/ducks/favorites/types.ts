@@ -1,3 +1,5 @@
+import { Article } from '../articles/types'
+
 /**
  * Action types
  */
@@ -24,19 +26,6 @@ export interface FetchFavoritesAction {
 export interface RemoveFavoriteAction {
   type: typeof FavoritesTypes.REMOVE_FAVORITE
   payload: string
-}
-
-/**
- * Data types
- */
-
-export interface Article {
-  id: string
-  title: string
-  authors: string[]
-  description: string
-  types: string[]
-  downloadUrl: string
 }
 
 /**

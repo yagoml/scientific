@@ -112,7 +112,7 @@ class Details extends Component<Props, DetailsState> {
   getDate = () => {
     const { article } = this.state
     if (!article || !article.datePublished) return
-    const dateStr: Date = article.datePublished
+    const dateStr = article.datePublished
     const date = new Date(dateStr)
     return date.toLocaleDateString()
   }
