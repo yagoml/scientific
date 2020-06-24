@@ -10,7 +10,7 @@ import Loader from '../../Loader'
 import history from '../../../history'
 import queryString from 'query-string'
 import { Trash } from 'react-bootstrap-icons'
-import TableHead from '../../Articles/TableHead'
+import TableHead from '../../articles/TableHead'
 import { getQueryPage } from '../../../helpers/uri-query'
 
 interface StateProps {
