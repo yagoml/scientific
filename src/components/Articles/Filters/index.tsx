@@ -47,10 +47,6 @@ class Filters extends Component<Props, ArticlesFilters> {
     this.state = initState
   }
 
-  componentDidMount() {
-    this.checkFilters()
-  }
-
   render() {
     return (
       <Form onSubmit={this.applyFilters} className="articles-form">
@@ -192,14 +188,6 @@ class Filters extends Component<Props, ArticlesFilters> {
     const hasStartYear = startYear !== undefined && startYear > 0
     const hasFinishYear = finishYear !== undefined && finishYear > 0
     return hasTerms || hasStartYear || hasFinishYear
-  }
-
-  /**
-   * Check if has filters to apply
-   */
-  checkFilters = () => {
-    if (this.props.total > 0) return
-    if (this.hasFilter()) this.applyFilters()
   }
 
   /**

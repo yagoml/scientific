@@ -19,6 +19,10 @@ interface StateProps {
   loading: boolean
 }
 
+interface OwnProps {
+  perPage?: number
+}
+
 interface OwnState {
   page: number
 }
@@ -28,19 +32,22 @@ interface DispatchProps {
   fetchFavorites(page: number, silent?: boolean): void
 }
 
-type Props = StateProps & DispatchProps
+type Props = StateProps & DispatchProps & OwnProps
 
 class DataTable extends Component<Props, OwnState> {
-  private perPage: number = 7
+  private perPage: number
 
   constructor(props: Props) {
     super(props)
+    const { perPage } = props
     let page = getQueryPage()
     this.state = { page: page }
+    this.perPage = perPage ? perPage : 7
   }
 
   componentDidMount() {
-    const { fetchFavorites } = this.props
+    const { fetchFavorites, articles } = this.props
+    if (articles.length) return
     // Fetch favorite articles list
     fetchFavorites(this.state.page)
   }
@@ -113,22 +120,26 @@ class DataTable extends Component<Props, OwnState> {
    */
   removeFavorite = (id: string, e: React.MouseEvent) => {
     e.stopPropagation()
-    const { removeFavorite, articles } = this.props
+    const { removeFavorite, articles, fetchFavorites } = this.props
     const article = articles.find(a => a.id === id)
     const remove = window.confirm(`Remover "${article?.title}" dos favoritos?`)
     if (!remove) return
     removeFavorite(id)
-    this.checkPage()
+    const pageChanged = this.checkPage()
+    if (!pageChanged) fetchFavorites(this.state.page, true)
   }
 
   /**
    * Check page on favorite exclusion.
    */
   checkPage = () => {
-    const { fetchFavorites, articles } = this.props
+    const { articles } = this.props
     let page = this.state.page
-    if (articles.length === 1 && page > 1) return this.togglePage()
-    fetchFavorites(page, true)
+    if (articles.length === 1 && page > 1) {
+      this.togglePage()
+      return true
+    }
+    return false
   }
 
   /**

@@ -17,7 +17,7 @@ export interface AddFavoriteAction {
 }
 
 export interface FetchFavoritesAction {
-  type: typeof FavoritesTypes.ADD_FAVORITE
+  type: typeof FavoritesTypes.FETCH_FAVORITES
   payload: number
 }
 
