@@ -78,7 +78,7 @@ class DataTable extends Component<Props, OwnState> {
                         rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
                       >
-                        Visualizar PDF
+                        Visualizar
                       </a>
                     </td>
                     <td>
@@ -111,16 +111,11 @@ class DataTable extends Component<Props, OwnState> {
    * @param id Article ID
    * @param e Click event
    */
-  removeFavorite = (
-    id: string,
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  removeFavorite = (id: string, e: React.MouseEvent) => {
     e.stopPropagation()
     const { removeFavorite, articles } = this.props
     const article = articles.find(a => a.id === id)
-    const remove = window.confirm(
-      'Remover "' + article?.title + '" dos favoritos?'
-    )
+    const remove = window.confirm(`Remover "${article?.title}" dos favoritos?`)
     if (!remove) return
     removeFavorite(id)
     this.checkPage()

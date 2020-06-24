@@ -59,7 +59,7 @@ class DataTable extends Component<Props> {
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
                 >
-                  Visualizar PDF
+                  Visualizar
                 </a>
               </td>
               <td>

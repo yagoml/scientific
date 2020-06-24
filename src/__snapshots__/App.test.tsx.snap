@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test App components render 1`] = `
+exports[`shold app (main) render correctly 1`] = `
 <App>
   <div
     className="app"
