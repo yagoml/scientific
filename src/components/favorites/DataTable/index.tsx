@@ -46,8 +46,7 @@ class DataTable extends Component<Props, OwnState> {
   }
 
   componentDidMount() {
-    const { fetchFavorites, articles } = this.props
-    if (articles.length) return
+    const { fetchFavorites } = this.props
     // Fetch favorite articles list
     fetchFavorites(this.state.page)
   }
