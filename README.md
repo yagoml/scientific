@@ -1,4 +1,7 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Scientific articles search. Search articles through Core api (https://core.ac.uk/).
+Save favorite articles.
+
+Stack: React, redux, redux-saga, typescript and sass.
 
 ## Available Scripts
 
