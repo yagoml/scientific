@@ -1,0 +1,13 @@
+.articles-form {
+  &__terms-wrapper {
+    width: 400px;
+  }
+
+  &__btn-search {
+    height: 40px;
+    top: 16px;
+    right: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
