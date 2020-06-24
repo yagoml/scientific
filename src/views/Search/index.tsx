@@ -1,5 +1,5 @@
 import React from 'react'
-import ArticlesSearch from '../../components/articles/ArticlesSearch'
+import ArticlesSearch from '../../components/Articles/ArticlesSearch'
 
 const Search = () => {
   return (

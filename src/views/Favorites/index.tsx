@@ -1,6 +1,6 @@
 import React from 'react'
-import DataTable from '../../components/favorites/DataTable'
-import BackLink from '../../components/common/BackLink'
+import DataTable from '../../components/Favorites/DataTable'
+import BackLink from '../../components/Common/BackLink'
 
 const pageTitle = 'Artigos favoritos'
 

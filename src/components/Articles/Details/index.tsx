@@ -5,7 +5,7 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { Article } from '../../../store/ducks/articles/types'
 import Loader from '../../../components/Loader'
 import './style.scss'
-import BackLink from './../../common/BackLink'
+import BackLink from './../../Common/BackLink'
 
 interface RouteParam {
   id: string
