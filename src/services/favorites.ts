@@ -1,5 +1,5 @@
 // Local storage key
-const LS_KEY = 'scientific_favorites'
+export const LS_KEY = 'scientific_favorites'
 const PER_PAGE = 7
 
 // Favorite articles service

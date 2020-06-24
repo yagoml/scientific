@@ -18,7 +18,7 @@ interface DetailsState {
 
 type Props = RouteComponentProps<RouteParam>
 
-class Details extends Component<Props, DetailsState> {
+export class Details extends Component<Props, DetailsState> {
   constructor(props: Props) {
     super(props)
     this.state = {

@@ -14,16 +14,16 @@ export const queryToInt = (queryString: string | string[]) => {
 /**
  * Get current query params
  */
-export const getQuery = () => {
-  return queryString.parse(window.location.search)
+export const getQuery = (search?: string) => {
+  return queryString.parse(search ? search : window.location.search)
 }
 
 /**
  * Get current page number query
  */
-export const getQueryPage = () => {
-  const query = getQuery()
-  return query.page ? parseInt(query.page.toString()) : 1
+export const getQueryPage = (search?: string) => {
+  const filters = getQuery(search)
+  return filters.page ? parseInt(filters.page.toString()) : 1
 }
 
 /**

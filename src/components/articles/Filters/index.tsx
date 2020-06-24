@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { Search } from 'react-bootstrap-icons'
 import { ArticlesFilters } from '../../../store/ducks/articles/types'
-import { Action, Dispatch, bindActionCreators } from 'redux'
+import { Dispatch, bindActionCreators } from 'redux'
 import { ApplicationState } from '../../../store/index'
 import * as ArticlesActions from '../../../store/ducks/articles/actions'
 import { connect } from 'react-redux'
@@ -21,13 +21,13 @@ interface OwnProps {
 }
 
 interface DispathProps {
-  setFilters(filters: ArticlesFilters): Action
-  cleanFilters(): Action
+  setFilters(filters: ArticlesFilters): void
+  cleanFilters(): void
 }
 
 type Props = StateProps & DispathProps & OwnProps
 
-class Filters extends Component<Props, ArticlesFilters> {
+export class Filters extends Component<Props, ArticlesFilters> {
   private years: number[]
 
   constructor(props: Props) {
